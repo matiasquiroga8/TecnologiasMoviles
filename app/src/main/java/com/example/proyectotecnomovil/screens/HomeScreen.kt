@@ -2,6 +2,7 @@ package com.example.proyectotecnomovil.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,8 +16,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
@@ -55,18 +58,20 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.res.painterResource
 import com.example.proyectotecnomovil.R
+import com.example.proyectotecnomovil.viewmodel.ProductorViewModel
 
 @Composable
 fun HomeScreen(
     navController: NavController,
     productores: List<Productor>,
-    favoritos: List<Producto>,
+    productosFavoritos: List<Producto>,
     onProductorClick: (Productor) -> Unit,
     onProductoClick: (Producto) -> Unit,
-    productoresFavoritos: List<Productor>
+    viewModelProductor: ProductorViewModel
 ) {
     var selectedItem by remember { mutableStateOf(0) }
     var showFavourites by remember { mutableStateOf(false) }
+    val productoresFavoritos = viewModelProductor.productoresFavoritos
 
     Scaffold(
         topBar = { TopBar(navController) },
@@ -82,12 +87,15 @@ fun HomeScreen(
                 0 -> BodyHome(
                     navController = navController,
                     productores = productores,
-                    favoritos = favoritos,
+                    productosFavoritos = productosFavoritos,
                     onProductorClick = onProductorClick,
-                    onProductoClick = onProductoClick
+                    onProductoClick = onProductoClick,
+                    productoresFavoritos =  productoresFavoritos,
+                    onToggleFavorito = { viewModelProductor.toggleFavorito(it) },
+                    isFavorito = { viewModelProductor.isFavorito(it) }
                 )
                 1 -> FavouriteSheet(
-                            favoritos = favoritos,
+                            productosFavoritos = productosFavoritos,
                             onProductoClick = {
                                 onProductoClick(it)
                                 showFavourites = false
@@ -106,10 +114,13 @@ fun HomeScreen(
 @Composable
 fun BodyHome(
     productores: List<Productor>,
-    favoritos: List<Producto>,
+    productosFavoritos: List<Producto>,
     onProductorClick: (Productor) -> Unit,
     onProductoClick: (Producto) -> Unit,
-    navController: NavController
+    navController: NavController,
+    productoresFavoritos: List<Productor>, // observable desde viewModel
+    onToggleFavorito: (Productor) -> Unit,
+    isFavorito: (Productor) -> Boolean
 ) {
     Scaffold() { padding ->
     Column(modifier = Modifier.padding(padding)) {
@@ -148,7 +159,8 @@ fun BodyHome(
                         Row(modifier = Modifier.padding(16.dp)) {
                             //Icon(Icons.Default.Home, contentDescription = null)
                             //Spacer(Modifier.width(8.dp))
-                            Column {
+                            var isFavorite by remember { mutableStateOf(false) }
+                            Column(modifier = Modifier.weight(1f)) {
                                 Text(
                                     text = productor.nombre,
                                     style = MaterialTheme.typography.titleMedium,
@@ -160,6 +172,19 @@ fun BodyHome(
                                     color = Color.White
                                 )
                             }
+
+                            val favorito = isFavorito(productor)
+
+                            Icon(
+                                imageVector = if (favorito) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                contentDescription = "Favorite",
+                                tint = if (favorito) Color.Red else Color.White,
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .border(1.dp, Color.White, CircleShape)
+                                    .clickable { onToggleFavorito(productor) }
+                                    .padding(4.dp)
+                            )
                         }
                     }
                 }
@@ -195,7 +220,7 @@ fun TopBar(navController: NavController) {
 @Composable
 fun FavouriteSheet(
     productoresFavoritos: List<Productor>,
-    favoritos: List<Producto>,
+    productosFavoritos: List<Producto>,
     onProductoClick: (Producto) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -216,7 +241,7 @@ fun FavouriteSheet(
         )
 
         LazyRow(modifier = Modifier.padding(8.dp)) {
-            items(favoritos) { producto ->
+            items(productosFavoritos) { producto ->
                 val productor = productoresFavoritos.find { it.nombre == producto.nombre}
 
                 Card(

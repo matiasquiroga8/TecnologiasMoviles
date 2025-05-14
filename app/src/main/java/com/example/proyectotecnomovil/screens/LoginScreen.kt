@@ -1,6 +1,10 @@
 package com.example.proyectotecnomovil.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.proyectotecnomovil.R
+import com.example.proyectotecnomovil.navigation.AppScreens
+import com.example.proyectotecnomovil.ui.theme.BorderLabelFocused
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -72,25 +78,36 @@ fun BodyLogin(modifier: Modifier = Modifier, navController: NavController) {
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
-            label = { Text("Name") },
-            modifier = Modifier
-                .fillMaxWidth(),
+            placeholder = { Text("Name")},
+            modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = Color.White,
-                focusedContainerColor = Color.White
+                focusedContainerColor = Color.White,
+                focusedLabelColor = Color.Gray,
+                unfocusedLabelColor = Color.Gray,
+                cursorColor = Color.Black,
+                focusedBorderColor = BorderLabelFocused,
+                unfocusedBorderColor = Color.Gray
             ),
             shape = RoundedCornerShape(8.dp)
         )
 
+        Spacer(modifier = Modifier.height(8.dp))
+
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
+            placeholder = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = Color.White,
-                focusedContainerColor = Color.White
+                focusedContainerColor = Color.White,
+                focusedLabelColor = Color.Gray,
+                unfocusedLabelColor = Color.Gray,
+                cursorColor = Color.Black,
+                focusedBorderColor = BorderLabelFocused,
+                unfocusedBorderColor = Color.Gray
             ),
             shape = RoundedCornerShape(8.dp)
         )
@@ -114,7 +131,7 @@ fun BodyLogin(modifier: Modifier = Modifier, navController: NavController) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
-        ){
+        ) {
             Text(
                 "Forgot Password?",
                 color = Color.White,
@@ -123,14 +140,24 @@ fun BodyLogin(modifier: Modifier = Modifier, navController: NavController) {
                 //modifier = Modifier.align(Alignment.Start)
             )
 
+            val interactionSource = remember { MutableInteractionSource() }
+            val isPressed by interactionSource.collectIsPressedAsState()
+
             Text(
                 "Signup!",
-                color = Color.White,
+                color = if (isPressed) Color.Gray else Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 12.sp,
+                modifier = Modifier.clickable(
+                    interactionSource = interactionSource,
+                    indication = null
+                ) {
+                    navController.navigate(AppScreens.RegisterScreen.route)
+                }
             )
         }
 
 
     }
 }
+

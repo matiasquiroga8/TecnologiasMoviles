@@ -1,12 +1,16 @@
 package com.example.proyectotecnomovil.screens
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -24,6 +28,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.proyectotecnomovil.navigation.AppScreens
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 
 @Composable
 fun RegisterScreen(navController: NavController) {
@@ -50,7 +56,23 @@ fun BodyRegister(modifier: Modifier = Modifier, navController: NavController) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text("Already Registered? Log in here.", fontSize = 12.sp, color = Color.Gray)
+        Row {
+            val interactionSource = remember { MutableInteractionSource() }
+            val isPressed by interactionSource.collectIsPressedAsState()
+
+            Text("Already Registered? ",fontSize = 12.sp, color = Color.Gray)
+            Text("Log in here.",
+                fontSize = 12.sp,
+                color = if (isPressed) Color.Blue else Color.Gray,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.clickable(
+                    interactionSource = interactionSource,
+                    indication = null // o podés usar rememberRipple() si ignorás la deprecación
+                ) {
+                    navController.navigate(AppScreens.LoginScreen.route)
+                }
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
