@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.proyectotecnomovil.screens.HomeScreen
 import com.example.proyectotecnomovil.screens.LoginScreen
 import com.example.proyectotecnomovil.screens.RegisterScreen
 
@@ -17,6 +18,15 @@ fun AppNavigation() {
         }
         composable(AppScreens.RegisterScreen.route) {
             RegisterScreen(navController)
+        }
+        composable(AppScreens.HomeScreen.route) {
+            HomeScreen(
+                navController,
+                productores = TODO(),
+                favoritos = TODO(),
+                onProductorClick = TODO(),
+                onProductoClick = TODO()
+            )
         }
     }
 }

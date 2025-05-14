@@ -128,7 +128,6 @@ fun BodyLogin(modifier: Modifier = Modifier, navController: NavController) {
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 12.sp,
-                //modifier = Modifier.align(Alignment.End)
             )
         }
 

@@ -11,20 +11,6 @@ class AuthActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-                /*Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    topBar = {
-                        Text(
-                            text = "Login",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(16.dp)
-                        )
-                    }
-                ) { innerPadding ->
-                    LoginScreen(modifier = Modifier.padding(innerPadding))
-                }*/
-
                 AppNavigation()
             }
         }
