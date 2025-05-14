@@ -6,6 +6,7 @@ import com.example.proyectotecnomovil.model.Producto
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.mutableStateListOf
 import com.example.proyectotecnomovil.screens.HomeScreen
 import androidx.navigation.compose.rememberNavController
 
@@ -17,6 +18,17 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         // Datos de prueba
         val productores = listOf(
+            Productor("Laura Tejidos", "Textiles", R.drawable.textiles),
+            Productor("Eco Jabones", "Cosmética natural", R.drawable.jabones),
+            Productor("Campo Vivo", "Alimentos orgánicos", R.drawable.alimento_organico),
+            Productor("Laura Tejidos", "Textiles", R.drawable.textiles),
+            Productor("Eco Jabones", "Cosmética natural", R.drawable.jabones),
+            Productor("Campo Vivo", "Alimentos orgánicos", R.drawable.alimento_organico),
+            Productor("Laura Tejidos", "Textiles", R.drawable.textiles),
+            Productor("Eco Jabones", "Cosmética natural", R.drawable.jabones),
+            Productor("Campo Vivo", "Alimentos orgánicos", R.drawable.alimento_organico)
+        )
+        val productoresFavoritos = listOf(
             Productor("Laura Tejidos", "Textiles", R.drawable.textiles),
             Productor("Eco Jabones", "Cosmética natural", R.drawable.jabones),
             Productor("Campo Vivo", "Alimentos orgánicos", R.drawable.alimento_organico),
@@ -47,7 +59,8 @@ class MainActivity : ComponentActivity() {
                 productores = productores,
                 favoritos = productosFavoritos,
                 onProductorClick = { /* Acción al tocar productor */ },
-                onProductoClick = { /* Acción al tocar producto */ }
+                onProductoClick = { /* Acción al tocar producto */ },
+                productoresFavoritos = productoresFavoritos
             )
 
         }

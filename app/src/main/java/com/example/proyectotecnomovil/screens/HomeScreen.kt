@@ -1,10 +1,12 @@
 package com.example.proyectotecnomovil.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,6 +25,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -45,10 +48,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.proyectotecnomovil.R
 import com.example.proyectotecnomovil.model.Producto
 import com.example.proyectotecnomovil.model.Productor
-
+import androidx.compose.material3.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.res.painterResource
+import com.example.proyectotecnomovil.R
 
 @Composable
 fun HomeScreen(
@@ -56,9 +62,11 @@ fun HomeScreen(
     productores: List<Productor>,
     favoritos: List<Producto>,
     onProductorClick: (Productor) -> Unit,
-    onProductoClick: (Producto) -> Unit
+    onProductoClick: (Producto) -> Unit,
+    productoresFavoritos: List<Productor>
 ) {
     var selectedItem by remember { mutableStateOf(0) }
+    var showFavourites by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = { TopBar(navController) },
@@ -78,12 +86,18 @@ fun HomeScreen(
                     onProductorClick = onProductorClick,
                     onProductoClick = onProductoClick
                 )
-                1 -> Favourites(
-                    navController = navController,
-                    favoritos = favoritos,
-                    onProductoClick = onProductoClick
-                )
-                // puedes agregar más casos si los necesitas
+                1 -> FavouriteSheet(
+                            favoritos = favoritos,
+                            onProductoClick = {
+                                onProductoClick(it)
+                                showFavourites = false
+                            },
+                            productoresFavoritos =  productoresFavoritos,
+                            onDismiss = {
+                                showFavourites = false
+                                selectedItem = 0 // Volver a Inicio al cerrar el sheet
+                            }
+                        )
             }
         }
     }
@@ -177,33 +191,64 @@ fun TopBar(navController: NavController) {
         colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Gray)
     )
 }
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Favourites(modifier: Modifier = Modifier, navController: NavController,
-               favoritos: List<Producto>, onProductoClick: (Producto) -> Unit) {
-    Text(
-        text = "Favoritos",
-        style = MaterialTheme.typography.titleMedium,
-        modifier = Modifier.padding(start = 16.dp, top = 16.dp)
-    )
+fun FavouriteSheet(
+    productoresFavoritos: List<Productor>,
+    favoritos: List<Producto>,
+    onProductoClick: (Producto) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    LaunchedEffect(Unit) {
+        sheetState.show()
+    }
 
-    LazyRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = Color.White
     ) {
-        items(favoritos) { producto ->
-            Card(
-                modifier = Modifier
-                    .size(150.dp)
-                    .padding(end = 8.dp)
-                    .clickable { onProductoClick(producto) }
-            ) {
-                Column(
-                    modifier = Modifier.padding(8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+        Text(
+            text = "Favoritos",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(16.dp)
+        )
+
+        LazyRow(modifier = Modifier.padding(8.dp)) {
+            items(favoritos) { producto ->
+                val productor = productoresFavoritos.find { it.nombre == producto.nombre}
+
+                Card(
+                    modifier = Modifier
+                        .size(150.dp)
+                        .padding(end = 8.dp)
+                        .clickable {
+                            onProductoClick(producto)
+                        }
                 ) {
-                    Icon(Icons.Default.Favorite, contentDescription = null)
-                    Text(producto.nombre, style = MaterialTheme.typography.bodyMedium)
+                    Column {
+                        productor?.let {
+                            Image(
+                                painter = painterResource(id = it.imagenUrl),
+                                contentDescription = "Imagen del productor",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(100.dp)
+                            )
+                        }
+
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Icon(Icons.Default.Favorite, contentDescription = null)
+                            Text(producto.nombre, style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
                 }
             }
         }

@@ -25,7 +25,8 @@ fun AppNavigation() {
                 productores = TODO(),
                 favoritos = TODO(),
                 onProductorClick = TODO(),
-                onProductoClick = TODO()
+                onProductoClick = TODO(),
+                productoresFavoritos = TODO()
             )
         }
     }
