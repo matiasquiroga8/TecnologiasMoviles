@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -54,7 +53,6 @@ import coil.compose.AsyncImage
 import com.example.proyectotecnomovil.model.Producto
 import com.example.proyectotecnomovil.model.Productor
 import androidx.compose.material3.*
-import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.res.painterResource
 import com.example.proyectotecnomovil.R
@@ -70,48 +68,6 @@ fun HomeScreen(
     onProductoClick: (Producto) -> Unit,
     viewModelProductor: ProductorViewModel
 ) {
- /*   var selectedItem by remember { mutableStateOf(0) }
-    var showFavourites by remember { mutableStateOf(false) }
-    val productoresFavoritos = viewModelProductor.productoresFavoritos
-    val productosFavoritos = viewModelProducto.productosFavoritos
-
-    Scaffold(
-        topBar = { TopBar(navController) },
-        bottomBar = {
-            BottomNavApp(
-                selectedItem = selectedItem,
-                onItemSelected = { selectedItem = it }
-            )
-        }
-    ) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
-            when (selectedItem) {
-                0 -> BodyHome(
-                    navController = navController,
-                    productores = productores,
-                    productosFavoritos = productosFavoritos,
-                    onProductorClick = onProductorClick,
-                    onProductoClick = onProductoClick,
-                    productoresFavoritos = productoresFavoritos,
-                    onToggleFavorito = { viewModelProductor.toggleFavorito(it) },
-                    isFavorito = { viewModelProductor.isFavorito(it) }
-                )
-
-                1 -> FavouriteSheet(
-                    productoresFavoritos = productoresFavoritos,
-                    productosFavoritos = productosFavoritos,
-                    /*onProductoClick = {
-                        onProductoClick(it)
-                        showFavourites = false
-                    }*/
-                    onDismiss = {
-                        showFavourites = false
-                        selectedItem = 0 // Volver a Inicio al cerrar el sheet
-                    }
-                )
-            }
-        }
-    }*/
     var selectedItem by remember { mutableStateOf(0) }
     var showFavourites by remember { mutableStateOf(false) }
     val productoresFavoritos = viewModelProductor.productoresFavoritos
@@ -133,12 +89,8 @@ fun HomeScreen(
 
             // 🔹 Mostrar contenido de la pantalla principal
             BodyHome(
-                navController = navController,
                 productores = productores,
-                productosFavoritos = productosFavoritos,
                 onProductorClick = onProductorClick,
-                onProductoClick = onProductoClick,
-                productoresFavoritos = productoresFavoritos,
                 onToggleFavorito = { viewModelProductor.toggleFavorito(it) },
                 isFavorito = { viewModelProductor.isFavorito(it) }
             )
@@ -161,11 +113,7 @@ fun HomeScreen(
 @Composable
 fun BodyHome(
     productores: List<Productor>,
-    productosFavoritos: List<Producto>,
     onProductorClick: (Productor) -> Unit,
-    onProductoClick: (Producto) -> Unit,
-    navController: NavController,
-    productoresFavoritos: List<Productor>, // observable desde viewModel
     onToggleFavorito: (Productor) -> Unit,
     isFavorito: (Productor) -> Boolean
 ) {
@@ -188,7 +136,7 @@ fun BodyHome(
                     ) {
                         Box(modifier = Modifier.height(150.dp)) {
                             AsyncImage(
-                                model = productor.imagenUrl,
+                                model = productor.imagenRes,
                                 contentDescription = "Imagen del productor",
                                 modifier = Modifier
 
@@ -204,8 +152,6 @@ fun BodyHome(
                             )
 
                             Row(modifier = Modifier.padding(16.dp)) {
-                                //Icon(Icons.Default.Home, contentDescription = null)
-                                //Spacer(Modifier.width(8.dp))
                                 var isFavorite by remember { mutableStateOf(false) }
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(
@@ -270,7 +216,6 @@ fun TopBar(navController: NavController) {
 fun FavouriteSheet(
     productoresFavoritos: List<Productor>,
     productosFavoritos: List<Producto>,
-    //onProductorClick: (Productor) -> Unit,
     onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -289,11 +234,7 @@ fun FavouriteSheet(
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(16.dp)
         )
-        Text(
-            text = "Productores",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(16.dp)
-        )
+
         if(productoresFavoritos.isEmpty()){
             Text(
                 text = "No hay productores agregados en favoritos",
@@ -301,22 +242,23 @@ fun FavouriteSheet(
                 modifier = Modifier.padding(16.dp)
             )
         }else{
+            Text(
+                text = "Productores",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(16.dp)
+            )
             LazyRow(modifier = Modifier.padding(8.dp)) {
                 items(productoresFavoritos) { productor ->
-                    //val productor = productoresFavoritos.find { it.nombre == productor.nombre }
-
                     Card(
                         modifier = Modifier
                             .size(170.dp)
                             .padding(end = 8.dp)
                             .clickable {
-                                // onProductorClick(productor)
                             }
                     ) {
                         Column {
-                            // productor?.let {
                             Image(
-                                painter = painterResource(id = productor.imagen),
+                                painter = painterResource(id = productor.hashCode()),
                                 contentDescription = "Imagen del productor",
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
@@ -338,11 +280,7 @@ fun FavouriteSheet(
                 }
             }
         }
-        Text(
-            text = "Productos",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(16.dp)
-        )
+
         if(productosFavoritos.isEmpty()){
             Text(
                 text = "No hay productos agregados en favoritos",
@@ -350,21 +288,22 @@ fun FavouriteSheet(
                 modifier = Modifier.padding(16.dp)
             )
         }else {
-
+            Text(
+                text = "Productos",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(16.dp)
+            )
             LazyRow(modifier = Modifier.padding(8.dp)) {
                 items(productosFavoritos) { producto ->
-                    //val productor = productoresFavoritos.find { it.nombre == productor.nombre }
 
                     Card(
                         modifier = Modifier
                             .size(170.dp)
                             .padding(end = 8.dp)
                             .clickable {
-                                // onProductorClick(productor)
                             }
                     ) {
                         Column {
-                            // productor?.let {
                             Image(
                                 painter = painterResource(id = R.drawable.ic_launcher_foreground), //Cambiar esto por la imagen real
                                 contentDescription = "Imagen del productor",
@@ -406,17 +345,6 @@ fun BottomNavApp(
 
     NavigationBar {
         items.forEachIndexed { index, item ->
-           /* NavigationBarItem(
-                icon = { Icon(item.icon, contentDescription = item.title) },
-                label = {
-                    if (selectedItem == index) {
-                        Text(item.title, fontSize = 10.sp)
-                    }
-                },
-                selected = selectedItem == index,
-                alwaysShowLabel = false,
-                onClick = { onItemSelected(index) }
-            )*///Esto muestra solo el icono con el titulo de donde estoy parado
             NavigationBarItem(
                 icon = { Icon(item.icon, contentDescription = item.title) },
                 label = { Text(item.title) },
