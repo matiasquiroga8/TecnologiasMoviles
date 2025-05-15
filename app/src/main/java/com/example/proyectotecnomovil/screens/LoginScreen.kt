@@ -1,5 +1,7 @@
 package com.example.proyectotecnomovil.screens
 
+import android.app.Activity
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,12 +32,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.proyectotecnomovil.MainActivity
 import com.example.proyectotecnomovil.R
 import com.example.proyectotecnomovil.navigation.AppScreens
 import com.example.proyectotecnomovil.ui.theme.BorderLabelFocused
@@ -51,7 +55,7 @@ fun LoginScreen(navController: NavController) {
 fun BodyLogin(modifier: Modifier = Modifier, navController: NavController) {
     var name by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
+    val context = LocalContext.current
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = R.drawable.fondo),
@@ -78,7 +82,7 @@ fun BodyLogin(modifier: Modifier = Modifier, navController: NavController) {
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
-            placeholder = { Text("Name")},
+            placeholder = { Text("User")},
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = Color.White,
@@ -115,7 +119,10 @@ fun BodyLogin(modifier: Modifier = Modifier, navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { /* TODO: login action */ },
+            onClick = { val intent = Intent(context, MainActivity::class.java)
+                context.startActivity(intent)
+                // Esto cierra la actividad actual
+                (context as? Activity)?.finish()},
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 Color.DarkGray

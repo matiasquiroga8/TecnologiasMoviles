@@ -62,16 +62,12 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val productoViewModel: ProductoViewModel = viewModel()
-            val productosFavoritos = productoViewModel.productosFavoritos
             val productorViewModel: ProductorViewModel = viewModel()
-
-
-
             val navController = rememberNavController()
             HomeScreen(
                 navController = navController,
                 productores = productores,
-                productosFavoritos = productosFavoritos,
+                viewModelProducto = productoViewModel,
                 onProductorClick = { /* Acción al tocar productor */ },
                 onProductoClick = { /* Acción al tocar producto */ },
                 viewModelProductor = productorViewModel

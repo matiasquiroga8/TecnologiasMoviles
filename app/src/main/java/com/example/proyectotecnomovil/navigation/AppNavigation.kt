@@ -23,7 +23,7 @@ fun AppNavigation() {
             HomeScreen(
                 navController,
                 productores = TODO(),
-                productosFavoritos = TODO(),
+                viewModelProducto = TODO(),
                 onProductorClick = TODO(),
                 onProductoClick = TODO(),
                 viewModelProductor = TODO()

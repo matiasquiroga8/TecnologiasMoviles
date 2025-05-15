@@ -1,5 +1,7 @@
 package com.example.proyectotecnomovil.screens
 
+import android.app.Activity
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +32,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.proyectotecnomovil.navigation.AppScreens
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.ui.platform.LocalContext
+import com.example.proyectotecnomovil.MainActivity
 
 @Composable
 fun RegisterScreen(navController: NavController) {
@@ -40,11 +44,11 @@ fun RegisterScreen(navController: NavController) {
 
 @Composable
 fun BodyRegister(modifier: Modifier = Modifier, navController: NavController) {
-    var name by remember { mutableStateOf("it") }
+    var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var dateOfBirth by remember { mutableStateOf("") }
-
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -81,7 +85,7 @@ fun BodyRegister(modifier: Modifier = Modifier, navController: NavController) {
             onValueChange = {
                 name = it
             },
-            label = { Text("Name") },
+            label = { Text("User") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -116,7 +120,10 @@ fun BodyRegister(modifier: Modifier = Modifier, navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { /* TODO: sign-up action */ },
+            onClick = { val intent = Intent(context, MainActivity::class.java)
+                context.startActivity(intent)
+                // Esto cierra la actividad actual
+                (context as? Activity)?.finish() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Sign up")
