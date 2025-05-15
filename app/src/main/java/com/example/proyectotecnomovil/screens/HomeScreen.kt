@@ -316,7 +316,7 @@ fun FavouriteSheet(
                         Column {
                             // productor?.let {
                             Image(
-                                painter = painterResource(id = productor.imagenUrl),
+                                painter = painterResource(id = productor.imagen),
                                 contentDescription = "Imagen del productor",
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
