@@ -9,9 +9,11 @@ import androidx.navigation.navArgument
 import com.example.proyectotecnomovil.model.Productor
 import com.example.proyectotecnomovil.screens.HomeScreen
 import com.example.proyectotecnomovil.screens.LoginScreen
+import com.example.proyectotecnomovil.screens.ProductorDetailScreen
 import com.example.proyectotecnomovil.screens.RegisterScreen
 import com.example.proyectotecnomovil.viewmodel.ProductoViewModel
 import com.example.proyectotecnomovil.viewmodel.ProductorViewModel
+import android.net.Uri
 
 
 @Composable
@@ -21,13 +23,13 @@ fun AppNavigation(
     viewModelProducto: ProductoViewModel,
     viewModelProductor: ProductorViewModel
 ) {
-    NavHost(navController = navController, startDestination = AppScreens.LoginScreen.route) {
-        composable(AppScreens.LoginScreen.route) {
+    NavHost(navController = navController, startDestination = AppScreens.HomeScreen.route) {
+        /*composable(AppScreens.LoginScreen.route) {
             LoginScreen(navController)
         }
         composable(AppScreens.RegisterScreen.route) {
             RegisterScreen(navController)
-        }
+        }*/
         composable(AppScreens.HomeScreen.route) {
             HomeScreen(
                 navController = navController,
@@ -35,11 +37,36 @@ fun AppNavigation(
                 viewModelProducto = viewModelProducto,
                 viewModelProductor = viewModelProductor,
                 onProductorClick = { productor ->
+                    navController.navigate("productorDetail/${Uri.encode(productor.nombre)}")
+                }
+                /*onProductorClick = { productor ->
                     navController.navigate("${AppScreens.ProductorDetailScreen.route}/${productor.nombre}")
-                },
+                }*/,
                 onProductoClick = {}
             )
         }
+        composable(
+            route = "productorDetail/{nombre}",
+            arguments = listOf(navArgument("nombre") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val nombreProductor = backStackEntry.arguments
+                ?.getString("nombre")
+                ?.let { Uri.decode(it) }
+
+            val productor = productores.find { it.nombre == nombreProductor }
+
+            productor?.let {
+                ProductorDetailScreen(
+                    navController = navController,
+                    productor = it,
+                    viewModelProducto = viewModelProducto,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+        }
+    }
+}
+        /*
         composable(
             route = "productorDetail/{nombre}",
             arguments = listOf(navArgument("nombre") { type = NavType.StringType })
@@ -61,4 +88,4 @@ fun AppNavigation(
 @Composable
 fun ProductorDetalleScreen(productor: Productor, viewModelProducto: ProductoViewModel) {
 
-}
+}*/

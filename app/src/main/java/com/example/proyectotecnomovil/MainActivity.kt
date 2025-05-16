@@ -1,6 +1,7 @@
 package com.example.proyectotecnomovil
 
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.proyectotecnomovil.data.FakeData.productores
 import com.example.proyectotecnomovil.model.Productor
 import com.example.proyectotecnomovil.navigation.AppNavigation
+import com.example.proyectotecnomovil.navigation.AppScreens
 import com.example.proyectotecnomovil.screens.ProductorDetailScreen
 import com.example.proyectotecnomovil.screens.Screen
 import com.example.proyectotecnomovil.viewmodel.ProductoViewModel
@@ -33,7 +35,12 @@ class MainActivity : ComponentActivity() {
                 navController = navController,
                 productores = productores,
                 viewModelProducto = productoViewModel,
-                onProductorClick = { /* Acción al tocar productor */ },
+                onProductorClick = { productor ->
+                    navController.navigate("productorDetail/${Uri.encode(productor.nombre)}")
+                }
+                /*onProductorClick = { productor ->
+                    navController.navigate("${AppScreens.ProductorDetailScreen.route}/${productor.nombre}")
+                }*/,
                 onProductoClick = { /* Acción al tocar producto */ },
                 viewModelProductor = productorViewModel
             )

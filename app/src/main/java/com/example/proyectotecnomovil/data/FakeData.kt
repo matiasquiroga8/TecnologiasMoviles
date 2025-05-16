@@ -142,9 +142,9 @@ object FakeData {
     )
 
     val productores = listOf(
-        Productor("Laura Tejidos", "Textiles", textiles, "", R.drawable.textiles),
-        Productor("Eco Jabones", "Cosmética natural", jabones, "", R.drawable.jabones),
-        Productor("Campo Vivo", "Alimentos orgánicos", alimentosOrganicos, "", R.drawable.alimento_organico)
+        Productor("LauraTejidos", "Textiles", textiles, "", R.drawable.textiles),
+        Productor("EcoJabones", "Cosmética natural", jabones, "", R.drawable.jabones),
+        Productor("CampoVivo", "Alimentos orgánicos", alimentosOrganicos, "", R.drawable.alimento_organico)
         /*
     Productor("Artesanía del Norte", "Cerámica artesanal", listOf(), "", R.drawable.ceramica),
     Productor("Dulzuras del Valle", "Conservas y dulces caseros", listOf(), "", R.drawable.dulces),
