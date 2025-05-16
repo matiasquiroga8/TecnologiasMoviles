@@ -8,4 +8,5 @@ sealed class AppScreens(val route: String) {
     object ProductorDetailScreen : AppScreens("productorDetail/{nombre}") {
         fun createRoute(nombre: String) = "productorDetail/$nombre"
     }
+    object ProfileScreen: AppScreens("profile_screen")
 }

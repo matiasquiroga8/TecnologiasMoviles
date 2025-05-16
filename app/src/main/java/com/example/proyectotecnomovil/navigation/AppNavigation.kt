@@ -14,6 +14,7 @@ import com.example.proyectotecnomovil.screens.RegisterScreen
 import com.example.proyectotecnomovil.viewmodel.ProductoViewModel
 import com.example.proyectotecnomovil.viewmodel.ProductorViewModel
 import android.net.Uri
+import com.example.proyectotecnomovil.screens.ProfileScreen
 
 
 @Composable
@@ -63,6 +64,12 @@ fun AppNavigation(
                     onBack = { navController.popBackStack() }
                 )
             }
+        }
+        composable(AppScreens.ProfileScreen.route) {
+            ProfileScreen(
+                navController= navController,
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

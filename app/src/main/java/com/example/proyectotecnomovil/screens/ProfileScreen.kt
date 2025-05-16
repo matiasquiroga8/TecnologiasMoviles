@@ -9,13 +9,21 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -28,15 +36,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.proyectotecnomovil.navigation.AppNavigation
+import com.example.proyectotecnomovil.navigation.AppScreens
+import com.example.proyectotecnomovil.ui.theme.BorderLabelFocused
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PerfilScreen(userName: String, email: String) {
+fun ProfileScreen(navController: NavController,onBack: () -> Unit) {
     var profileImageUri by remember { mutableStateOf<Uri?>(null) }
+    var userName by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var dateOfBirth by remember { mutableStateOf("") }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -46,7 +62,13 @@ fun PerfilScreen(userName: String, email: String) {
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Mi Perfil") })
+            TopAppBar(
+                title = { Text("Mi Perfil") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                    }
+                })
         }
     ) { padding ->
         Column(
@@ -71,8 +93,84 @@ fun PerfilScreen(userName: String, email: String) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(text = "Nombre: $userName", style = MaterialTheme.typography.bodyLarge)
-            Text(text = "Email: $email", style = MaterialTheme.typography.bodyMedium)
+            OutlinedTextField(
+                value = userName,
+                onValueChange = { userName = it },
+                placeholder = { Text("User") },
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = Color.White,
+                    focusedLabelColor = Color.Gray,
+                    unfocusedLabelColor = Color.Gray,
+                    cursorColor = Color.Black,
+                    focusedBorderColor = BorderLabelFocused,
+                    unfocusedBorderColor = Color.Gray
+                ),
+                shape = RoundedCornerShape(8.dp)
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                placeholder = { Text("Email") },
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = Color.White,
+                    focusedLabelColor = Color.Gray,
+                    unfocusedLabelColor = Color.Gray,
+                    cursorColor = Color.Black,
+                    focusedBorderColor = BorderLabelFocused,
+                    unfocusedBorderColor = Color.Gray
+                ),
+                shape = RoundedCornerShape(8.dp)
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = password,
+                onValueChange = {
+                    password = it
+                },
+                placeholder = { Text("Password") },
+                modifier = Modifier.fillMaxWidth(),
+                visualTransformation = PasswordVisualTransformation(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = Color.White,
+                    focusedLabelColor = Color.Gray,
+                    unfocusedLabelColor = Color.Gray,
+                    cursorColor = Color.Black,
+                    focusedBorderColor = BorderLabelFocused,
+                    unfocusedBorderColor = Color.Gray
+                ),
+                shape = RoundedCornerShape(8.dp)
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = dateOfBirth,
+                onValueChange = {
+                    dateOfBirth = it
+                },
+                placeholder = { Text("Date of Birth") },
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = Color.White,
+                    focusedLabelColor = Color.Gray,
+                    unfocusedLabelColor = Color.Gray,
+                    cursorColor = Color.Black,
+                    focusedBorderColor = BorderLabelFocused,
+                    unfocusedBorderColor = Color.Gray
+                ),
+                shape = RoundedCornerShape(8.dp)
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 

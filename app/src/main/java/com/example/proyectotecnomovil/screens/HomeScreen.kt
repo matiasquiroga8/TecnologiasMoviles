@@ -55,6 +55,7 @@ import com.example.proyectotecnomovil.model.Producto
 import com.example.proyectotecnomovil.model.Productor
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import com.example.proyectotecnomovil.navigation.AppScreens
 import com.example.proyectotecnomovil.viewmodel.ProductoViewModel
 import com.example.proyectotecnomovil.viewmodel.ProductorViewModel
 
@@ -104,6 +105,9 @@ fun HomeScreen(
                         selectedItem = 0 // Volver a Home al cerrar el sheet
                     }
                 )
+            }
+            if(selectedItem==3){
+                navController.navigate(AppScreens.ProfileScreen.route)
             }
         }
     }
