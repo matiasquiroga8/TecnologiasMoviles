@@ -1,17 +1,26 @@
 package com.example.proyectotecnomovil.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.proyectotecnomovil.model.Productor
 import com.example.proyectotecnomovil.screens.HomeScreen
 import com.example.proyectotecnomovil.screens.LoginScreen
 import com.example.proyectotecnomovil.screens.RegisterScreen
+import com.example.proyectotecnomovil.viewmodel.ProductoViewModel
+import com.example.proyectotecnomovil.viewmodel.ProductorViewModel
 
 
 @Composable
-fun AppNavigation() {
-    val navController = rememberNavController()
+fun AppNavigation(
+    navController: NavHostController,
+    productores: List<Productor>,
+    viewModelProducto: ProductoViewModel,
+    viewModelProductor: ProductorViewModel
+) {
     NavHost(navController = navController, startDestination = AppScreens.LoginScreen.route) {
         composable(AppScreens.LoginScreen.route) {
             LoginScreen(navController)
@@ -21,13 +30,35 @@ fun AppNavigation() {
         }
         composable(AppScreens.HomeScreen.route) {
             HomeScreen(
-                navController,
-                productores = TODO(),
-                viewModelProducto = TODO(),
-                onProductorClick = TODO(),
-                onProductoClick = TODO(),
-                viewModelProductor = TODO()
+                navController = navController,
+                productores = productores,
+                viewModelProducto = viewModelProducto,
+                viewModelProductor = viewModelProductor,
+                onProductorClick = { productor ->
+                    navController.navigate("${AppScreens.ProductorDetailScreen.route}/${productor.nombre}")
+                },
+                onProductoClick = {}
             )
         }
+        composable(
+            route = "productorDetail/{nombre}",
+            arguments = listOf(navArgument("nombre") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val nombreProductor = backStackEntry.arguments?.getString("nombre")
+
+            val productor = productores.find { it.nombre == nombreProductor }
+
+            productor?.let {
+                ProductorDetalleScreen(
+                    productor = it,
+                    viewModelProducto = viewModelProducto
+                )
+            }
+        }
     }
+}
+
+@Composable
+fun ProductorDetalleScreen(productor: Productor, viewModelProducto: ProductoViewModel) {
+
 }

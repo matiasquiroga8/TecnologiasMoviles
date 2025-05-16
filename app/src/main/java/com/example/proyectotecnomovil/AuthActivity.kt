@@ -11,7 +11,12 @@ class AuthActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-                AppNavigation()
+                AppNavigation(
+                    navController = TODO(),
+                    productores = TODO(),
+                    viewModelProducto = TODO(),
+                    viewModelProductor = TODO()
+                )
             }
         }
     }

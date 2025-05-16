@@ -1,6 +1,5 @@
 package com.example.proyectotecnomovil.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
@@ -54,8 +54,6 @@ import com.example.proyectotecnomovil.model.Producto
 import com.example.proyectotecnomovil.model.Productor
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.res.painterResource
-import com.example.proyectotecnomovil.R
 import com.example.proyectotecnomovil.viewmodel.ProductoViewModel
 import com.example.proyectotecnomovil.viewmodel.ProductorViewModel
 
@@ -167,7 +165,6 @@ fun BodyHome(
                                 }
 
                                 val favorito = isFavorito(productor)
-
                                 Icon(
                                     imageVector = if (favorito) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                                     contentDescription = "Favorite",
@@ -228,20 +225,20 @@ fun FavouriteSheet(
         sheetState = sheetState,
         containerColor = Color.White,
         scrimColor = Color.Black.copy(alpha = 0.2f) // Ajusta la opacidad del fondo
-        ) {
+    ) {
         Text(
             text = "Favoritos",
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(16.dp)
         )
 
-        if(productoresFavoritos.isEmpty()){
+        if (productoresFavoritos.isEmpty()) {
             Text(
                 text = "No hay productores agregados en favoritos",
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(16.dp)
             )
-        }else{
+        } else {
             Text(
                 text = "Productores",
                 style = MaterialTheme.typography.titleMedium,
@@ -257,9 +254,9 @@ fun FavouriteSheet(
                             }
                     ) {
                         Column {
-                            Image(
-                                painter = painterResource(id = productor.hashCode()),
-                                contentDescription = "Imagen del productor",
+                            AsyncImage(
+                                model = productor.imagenRes, // puede ser una URL o un nombre de recurso
+                                contentDescription = productor.nombre,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -281,13 +278,13 @@ fun FavouriteSheet(
             }
         }
 
-        if(productosFavoritos.isEmpty()){
+        if (productosFavoritos.isEmpty()) {
             Text(
                 text = "No hay productos agregados en favoritos",
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(16.dp)
             )
-        }else {
+        } else {
             Text(
                 text = "Productos",
                 style = MaterialTheme.typography.titleMedium,
@@ -304,9 +301,9 @@ fun FavouriteSheet(
                             }
                     ) {
                         Column {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_launcher_foreground), //Cambiar esto por la imagen real
-                                contentDescription = "Imagen del productor",
+                            AsyncImage(
+                                model = producto.imagen, // puede ser una URL o un nombre de recurso
+                                contentDescription = producto.nombre,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -360,4 +357,73 @@ sealed class BottomNavItem(val title: String, val icon: ImageVector) {
     data object Favorites : BottomNavItem("Favoritos", Icons.Default.Favorite)
     data object Notifications : BottomNavItem("Notif.", Icons.Default.Notifications)
     data object Profile : BottomNavItem("Perfil", Icons.Default.Person)
+}
+
+sealed class Screen(val route: String) {
+    object Home : Screen("home")
+    object ProductorDetail : Screen("productor_detail")
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProductorDetailScreen(
+    productor: Productor,
+    viewModelProducto: ProductoViewModel,
+    onBack: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(productor.nombre) },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        LazyColumn(modifier = Modifier.padding(padding)) {
+            items(productor.productos) { producto ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .clickable { /* Acción si se quiere ver más del producto */ }
+                ) {
+                    Column {
+                        AsyncImage(
+                            model = producto.imagen,
+                            contentDescription = producto.nombre,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(180.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                        Row(
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(producto.nombre, fontWeight = FontWeight.Bold)
+                                Text("$${producto.precio}")
+                                Text(producto.descripcion)
+                            }
+                            val isFav = viewModelProducto.isFavorito(producto)
+                            Icon(
+                                imageVector = if (isFav) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                contentDescription = null,
+                                tint = if (isFav) Color.Red else Color.Gray,
+                                modifier = Modifier
+                                    .clickable { viewModelProducto.toggleFavorito(producto) }
+                                    .padding(8.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
