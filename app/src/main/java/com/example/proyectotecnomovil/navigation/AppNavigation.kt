@@ -25,12 +25,7 @@ fun AppNavigation(
     viewModelProductor: ProductorViewModel
 ) {
     NavHost(navController = navController, startDestination = AppScreens.HomeScreen.route) {
-        /*composable(AppScreens.LoginScreen.route) {
-            LoginScreen(navController)
-        }
-        composable(AppScreens.RegisterScreen.route) {
-            RegisterScreen(navController)
-        }*/
+
         composable(AppScreens.HomeScreen.route) {
             HomeScreen(
                 navController = navController,
@@ -39,10 +34,7 @@ fun AppNavigation(
                 viewModelProductor = viewModelProductor,
                 onProductorClick = { productor ->
                     navController.navigate("productorDetail/${Uri.encode(productor.nombre)}")
-                }
-                /*onProductorClick = { productor ->
-                    navController.navigate("${AppScreens.ProductorDetailScreen.route}/${productor.nombre}")
-                }*/,
+                },
                 onProductoClick = {}
             )
         }
@@ -65,34 +57,21 @@ fun AppNavigation(
                 )
             }
         }
-        composable(AppScreens.ProfileScreen.route) {
-            ProfileScreen(
-                navController= navController,
-                onBack = { navController.popBackStack() }
-            )
-        }
-    }
-}
-        /*
-        composable(
-            route = "productorDetail/{nombre}",
-            arguments = listOf(navArgument("nombre") { type = NavType.StringType })
+        composable(AppScreens.ProductorDetailScreen.route,
+            listOf(navArgument("nombre") { type = NavType.StringType })
         ) { backStackEntry ->
-            val nombreProductor = backStackEntry.arguments?.getString("nombre")
+            val nombre = backStackEntry.arguments?.getString("nombre")
+            val productor = productores.find { it.nombre == nombre }
 
-            val productor = productores.find { it.nombre == nombreProductor }
-
-            productor?.let {
-                ProductorDetalleScreen(
-                    productor = it,
-                    viewModelProducto = viewModelProducto
+            if (productor != null) {
+                ProductorDetailScreen(
+                    navController = navController,
+                    productor = productor,
+                    viewModelProducto = viewModelProducto,
+                    onBack = { navController.popBackStack() }
                 )
             }
         }
     }
 }
 
-@Composable
-fun ProductorDetalleScreen(productor: Productor, viewModelProducto: ProductoViewModel) {
-
-}*/

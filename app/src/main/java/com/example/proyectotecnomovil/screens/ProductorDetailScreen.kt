@@ -36,7 +36,7 @@ import com.example.proyectotecnomovil.viewmodel.ProductoViewModel
 fun ProductorDetailScreen(
     navController: NavController,
     productor: Productor,
-    viewModelProducto: ProductoViewModel,
+    viewModelProducto: ProductoViewModel,   
     onBack: () -> Unit
 ) {
     Scaffold(

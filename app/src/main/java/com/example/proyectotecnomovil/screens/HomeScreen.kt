@@ -19,13 +19,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
@@ -51,10 +47,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.proyectotecnomovil.model.Producto
@@ -67,6 +61,7 @@ import com.example.proyectotecnomovil.viewmodel.ProductorViewModel
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.res.painterResource
 import com.example.proyectotecnomovil.R
+import androidx.compose.ui.platform.LocalFocusManager
 
 @Composable
 fun HomeScreen(
@@ -198,6 +193,7 @@ fun BodyHome(
     }
 
 }
+/*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
@@ -245,7 +241,7 @@ fun TopBar(
                         singleLine = true,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(50.dp),
+                            .height(60.dp),
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor   = Color.White,
                             unfocusedContainerColor = Color.White,
@@ -310,30 +306,121 @@ fun TopBar(
         )
     )
 }
-
-/*
+*/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(navController: NavController) {
+fun TopBar(
+    navController: NavController,
+    productores: List<Productor>,
+    onSettingsClick: () -> Unit
+) {
+    var query by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
+
+    val suggestions = remember(query) {
+        if (query.isBlank()) emptyList()
+        else productores.filter {
+            it.nombre.contains(query, ignoreCase = true) ||
+                    it.categoria.contains(query, ignoreCase = true)
+        }
+    }
+
+    val focusManager = LocalFocusManager.current
+
     TopAppBar(
         title = {
-            Box(
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Manos Locales",
-                    style = TextStyle(
-                        color = Color.Black,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = "Logo Manos Locales",
+                    modifier = Modifier
+                        .height(32.dp)
+                        .padding(end = 8.dp)
                 )
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                // 🔄 Buscador con ExposedDropdownMenuBox
+                ExposedDropdownMenuBox(
+                    expanded = expanded && suggestions.isNotEmpty(),
+                    onExpandedChange = { expanded = it },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    TextField(
+                        value = query,
+                        onValueChange = {
+                            query = it
+                            expanded = it.isNotBlank()
+                        },
+                        placeholder = { Text("Buscar productor…") },
+                        singleLine = true,
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded)
+                        },
+                        modifier = Modifier
+                            .menuAnchor() // ✅ necesario para posicionar correctamente el menú
+                            .fillMaxWidth()
+                            .height(60.dp),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                            disabledContainerColor = Color.LightGray,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                            cursorColor = Color.Black,
+                            errorIndicatorColor = Color.Red
+                        )
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expanded && suggestions.isNotEmpty(),
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        suggestions.forEach { productor ->
+                            DropdownMenuItem(
+                                text = {
+                                    Column {
+                                        Text(productor.nombre, fontWeight = FontWeight.Medium)
+                                        Text(
+                                            productor.categoria,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = Color.Gray
+                                        )
+                                    }
+                                },
+                                onClick = {
+                                    query = productor.nombre
+                                    expanded = false
+                                    focusManager.clearFocus()
+                                    navController.navigate(AppScreens.ProductorDetailScreen.createRoute(productor.nombre))
+                                    // Ejemplo: navController.navigate("productorDetail/${productor.nombre}")
+                                }
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                IconButton(onClick = onSettingsClick) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Configuraciones",
+                        tint = Color.Black
+                    )
+                }
             }
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Gray)
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Gray
+        )
     )
-}*/
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -490,68 +577,4 @@ sealed class Screen(val route: String) {
     object Home : Screen("home")
     object ProductorDetail : Screen("productor_detail")
 }
-
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun ProductorDetailScreen(
-//    navController: NavController,
-//    productor: Productor,
-//    viewModelProducto: ProductoViewModel,
-//    onBack: () -> Unit
-//) {
-//    Scaffold(
-//        topBar = {
-//            TopAppBar(
-//                title = { Text(productor.nombre) },
-//                navigationIcon = {
-//                    IconButton(onClick = onBack) {
-//                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
-//                    }
-//                }
-//            )
-//        }
-//    ) { padding ->
-//        LazyColumn(modifier = Modifier.padding(padding)) {
-//            items(productor.productos) { producto ->
-//                Card(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(8.dp)
-//                        .clickable { /* Acción si se quiere ver más del producto */ }
-//                ) {
-//                    Column {
-//                        AsyncImage(
-//                            model = producto.imagen,
-//                            contentDescription = producto.nombre,
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .height(180.dp),
-//                            contentScale = ContentScale.Crop
-//                        )
-//                        Row(
-//                            modifier = Modifier
-//                                .padding(8.dp)
-//                                .fillMaxWidth(),
-//                            verticalAlignment = Alignment.CenterVertically
-//                        ) {
-//                            Column(modifier = Modifier.weight(1f)) {
-//                                Text(producto.nombre, fontWeight = FontWeight.Bold)
-//                                Text("$${producto.precio}")
-//                                Text(producto.descripcion)
-//                            }
-//                            val isFav = viewModelProducto.isFavorito(producto)
-//                            Icon(
-//                                imageVector = if (isFav) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-//                                contentDescription = null,
-//                                tint = if (isFav) Color.Red else Color.Gray,
-//                                modifier = Modifier
-//                                    .clickable { viewModelProducto.toggleFavorito(producto) }
-//                                    .padding(8.dp)
-//                            )
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
 
