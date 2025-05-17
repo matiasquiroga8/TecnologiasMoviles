@@ -1,16 +1,19 @@
 package com.example.proyectotecnomovil.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -21,8 +24,11 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,6 +64,9 @@ import androidx.compose.runtime.*
 import com.example.proyectotecnomovil.navigation.AppScreens
 import com.example.proyectotecnomovil.viewmodel.ProductoViewModel
 import com.example.proyectotecnomovil.viewmodel.ProductorViewModel
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.ui.res.painterResource
+import com.example.proyectotecnomovil.R
 
 @Composable
 fun HomeScreen(
@@ -74,7 +83,7 @@ fun HomeScreen(
     val productosFavoritos = viewModelProducto.productosFavoritos
 
     Scaffold(
-        topBar = { TopBar(navController) },
+        topBar = { TopBar(navController, productores, onSettingsClick = {}) },
         bottomBar = {
             BottomNavApp(
                 selectedItem = selectedItem,
@@ -189,7 +198,120 @@ fun BodyHome(
     }
 
 }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopBar(
+    navController: NavController,
+    productores: List<Productor>,
+    onSettingsClick: () -> Unit
+) {
+    var query by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
 
+    val suggestions = remember(query) {
+        if (query.isBlank()) emptyList()
+        else productores.filter {
+            it.nombre.contains(query, ignoreCase = true) ||
+                    it.categoria.contains(query, ignoreCase = true)
+        }
+    }
+
+    TopAppBar(
+        title = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = "Logo Manos Locales",
+                    modifier = Modifier
+                        .height(32.dp)
+                        .padding(end = 8.dp)
+                )
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                // Buscador
+                Box(modifier = Modifier.weight(1f)) {
+                    TextField(
+                        value = query,
+                        onValueChange = {
+                            query = it
+                            expanded = it.isNotBlank()
+                        },
+                        placeholder = { Text("Buscar productor…") },
+                        singleLine = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor   = Color.White,
+                            unfocusedContainerColor = Color.White,
+                            disabledContainerColor  = Color.LightGray,
+                            focusedIndicatorColor   = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor  = Color.Transparent,
+                            cursorColor             = Color.Black,
+                            errorIndicatorColor     = Color.Red
+                        ),
+                        trailingIcon = {
+                            Icon(
+                                imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                                contentDescription = null
+                            )
+                        }
+                    )
+
+                    DropdownMenu(
+                        expanded = expanded && suggestions.isNotEmpty(),
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.White)
+                    ) {
+                        suggestions.forEach { productor ->
+                            DropdownMenuItem(
+                                text = {
+                                    Column {
+                                        Text(productor.nombre, fontWeight = FontWeight.Medium)
+                                        Text(
+                                            productor.categoria,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = Color.Gray
+                                        )
+                                    }
+                                },
+                                onClick = {
+                                    query = productor.nombre
+                                    expanded = false
+                                    // Puedes hacer algo con el productor seleccionado:
+                                    // navController.navigate("producer/${producer.id}")
+                                }
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                IconButton(onClick = onSettingsClick) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Configuraciones",
+                        tint = Color.Black
+                    )
+                }
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Gray
+        )
+    )
+}
+
+/*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(navController: NavController) {
@@ -211,7 +333,7 @@ fun TopBar(navController: NavController) {
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Gray)
     )
-}
+}*/
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
