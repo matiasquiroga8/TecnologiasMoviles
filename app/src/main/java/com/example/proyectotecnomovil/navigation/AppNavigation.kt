@@ -15,6 +15,7 @@ import com.example.proyectotecnomovil.viewmodel.ProductoViewModel
 import com.example.proyectotecnomovil.viewmodel.ProductorViewModel
 import android.net.Uri
 import com.example.proyectotecnomovil.screens.ProfileScreen
+import com.example.proyectotecnomovil.screens.SettingsScreen
 
 
 @Composable
@@ -57,7 +58,8 @@ fun AppNavigation(
                 )
             }
         }
-        composable(AppScreens.ProductorDetailScreen.route,
+        composable(
+            AppScreens.ProductorDetailScreen.route,
             listOf(navArgument("nombre") { type = NavType.StringType })
         ) { backStackEntry ->
             val nombre = backStackEntry.arguments?.getString("nombre")
@@ -71,6 +73,18 @@ fun AppNavigation(
                     onBack = { navController.popBackStack() }
                 )
             }
+        }
+        composable(AppScreens.ProfileScreen.route) {
+            ProfileScreen(
+                navController = navController,
+                onBack = { navController.popBackStack() }
+            )
+        }
+        composable(AppScreens.SettingsScreen.route){
+            val categorias =listOf("Todos") + productores.map { it.categoria }.distinct().sorted()
+            //val categoriasConTodos = listOf("Todos") + categorias
+
+            SettingsScreen(categorias)
         }
     }
 }

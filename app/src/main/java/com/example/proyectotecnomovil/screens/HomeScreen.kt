@@ -411,7 +411,9 @@ fun TopBar(
                     Icon(
                         imageVector = Icons.Default.Settings,
                         contentDescription = "Configuraciones",
-                        tint = Color.Black
+                        tint = Color.Black,
+                        modifier = Modifier.clickable { navController.navigate(AppScreens.SettingsScreen.route) }
+
                     )
                 }
             }

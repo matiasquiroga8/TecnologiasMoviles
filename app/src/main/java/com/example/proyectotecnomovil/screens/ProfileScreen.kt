@@ -1,11 +1,15 @@
 package com.example.proyectotecnomovil.screens
 
+import android.app.DatePickerDialog
 import android.net.Uri
+import android.widget.DatePicker
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +31,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,6 +50,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.proyectotecnomovil.navigation.AppNavigation
 import com.example.proyectotecnomovil.navigation.AppScreens
 import com.example.proyectotecnomovil.ui.theme.BorderLabelFocused
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -153,7 +160,13 @@ fun ProfileScreen(navController: NavController,onBack: () -> Unit) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            OutlinedTextField(
+            var dateOfBirth by remember { mutableStateOf("") }
+
+            FechaNacimientoField(
+                dateOfBirth = dateOfBirth,
+                onDateSelected = { dateOfBirth = it }
+            )
+            /*OutlinedTextField(
                 value = dateOfBirth,
                 onValueChange = {
                     dateOfBirth = it
@@ -170,7 +183,7 @@ fun ProfileScreen(navController: NavController,onBack: () -> Unit) {
                     unfocusedBorderColor = Color.Gray
                 ),
                 shape = RoundedCornerShape(8.dp)
-            )
+            )*/
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -185,4 +198,52 @@ fun ProfileScreen(navController: NavController,onBack: () -> Unit) {
             }
         }
     }
+}
+
+@Composable
+fun FechaNacimientoField(
+    dateOfBirth: String,
+    onDateSelected: (String) -> Unit
+) {
+    val context = LocalContext.current
+
+    val calendar = remember { Calendar.getInstance() }
+
+    val datePickerDialog = remember {
+        DatePickerDialog(
+            context,
+            { _: DatePicker, year: Int, month: Int, day: Int ->
+                val formattedDate = "%02d/%02d/%04d".format(day, month + 1, year)
+                onDateSelected(formattedDate)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+    }
+
+    OutlinedTextField(
+        value = dateOfBirth,
+        onValueChange = {}, // No editable directamente
+        placeholder = { Text("Fecha de nacimiento") },
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) {
+                datePickerDialog.show()
+            },
+        readOnly = true,
+        shape = RoundedCornerShape(8.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedContainerColor = Color.White,
+            focusedContainerColor = Color.White,
+            focusedLabelColor = Color.Gray,
+            unfocusedLabelColor = Color.Gray,
+            cursorColor = Color.Black,
+            focusedBorderColor = Color(0xFF4CAF50), // Verde personalizado
+            unfocusedBorderColor = Color.Gray
+        )
+    )
 }
