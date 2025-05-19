@@ -43,4 +43,5 @@ Estructura del proyecto
 ├── viewmodel/
 │   ├── ProductoViewModel.kt # Lógica de productos favoritos
 │   └── ProductorViewModel.kt# Lógica de productores favoritos
-└── MainActivity.kt          # Punto de entrada de la aplicación
+├── AuthActivity.kt          # Login y Registro
+└── MainActivity.kt          # Pantallas dentro de la app
