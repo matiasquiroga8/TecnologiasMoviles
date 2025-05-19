@@ -1,3 +1,5 @@
+[ManosLocales.zip](https://github.com/user-attachments/files/20292547/ManosLocales.zip)
+
 Aplicación móvil desarrollada en Jetpack Compose que conecta a consumidores con productores locales de alimentos y productos artesanales. Permite explorar productores por categoría, buscar por nombre o rubro, y acceder a sus productos detallados.
 
 Características:
@@ -23,6 +25,7 @@ Gestión de estado: ViewModel + State
 Persistencia: MutableStateList (simulación de favoritos)
 
 Recursos: Imágenes de productos desde Pexels
+
 
 Estructura del proyecto
 
