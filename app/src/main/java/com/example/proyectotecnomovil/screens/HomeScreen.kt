@@ -1,5 +1,6 @@
 package com.example.proyectotecnomovil.screens
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -107,7 +108,8 @@ fun HomeScreen(
                     onDismiss = {
                         showFavourites = false
                         selectedItem = 0 // Volver a Home al cerrar el sheet
-                    }
+                    },
+                    navController = navController
                 )
             }
             if(selectedItem==3){
@@ -193,120 +195,7 @@ fun BodyHome(
     }
 
 }
-/*
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopBar(
-    navController: NavController,
-    productores: List<Productor>,
-    onSettingsClick: () -> Unit
-) {
-    var query by remember { mutableStateOf("") }
-    var expanded by remember { mutableStateOf(false) }
 
-    val suggestions = remember(query) {
-        if (query.isBlank()) emptyList()
-        else productores.filter {
-            it.nombre.contains(query, ignoreCase = true) ||
-                    it.categoria.contains(query, ignoreCase = true)
-        }
-    }
-
-    TopAppBar(
-        title = {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Image(
-                    painter = painterResource(id = R.drawable.logo),
-                    contentDescription = "Logo Manos Locales",
-                    modifier = Modifier
-                        .height(32.dp)
-                        .padding(end = 8.dp)
-                )
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                // Buscador
-                Box(modifier = Modifier.weight(1f)) {
-                    TextField(
-                        value = query,
-                        onValueChange = {
-                            query = it
-                            expanded = it.isNotBlank()
-                        },
-                        placeholder = { Text("Buscar productor…") },
-                        singleLine = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(60.dp),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor   = Color.White,
-                            unfocusedContainerColor = Color.White,
-                            disabledContainerColor  = Color.LightGray,
-                            focusedIndicatorColor   = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor  = Color.Transparent,
-                            cursorColor             = Color.Black,
-                            errorIndicatorColor     = Color.Red
-                        ),
-                        trailingIcon = {
-                            Icon(
-                                imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                                contentDescription = null
-                            )
-                        }
-                    )
-
-                    DropdownMenu(
-                        expanded = expanded && suggestions.isNotEmpty(),
-                        onDismissRequest = { expanded = false },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.White)
-                    ) {
-                        suggestions.forEach { productor ->
-                            DropdownMenuItem(
-                                text = {
-                                    Column {
-                                        Text(productor.nombre, fontWeight = FontWeight.Medium)
-                                        Text(
-                                            productor.categoria,
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = Color.Gray
-                                        )
-                                    }
-                                },
-                                onClick = {
-                                    query = productor.nombre
-                                    expanded = false
-                                    // Puedes hacer algo con el productor seleccionado:
-                                    // navController.navigate("producer/${producer.id}")
-                                }
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                IconButton(onClick = onSettingsClick) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "Configuraciones",
-                        tint = Color.Black
-                    )
-                }
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Gray
-        )
-    )
-}
-*/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
@@ -397,7 +286,7 @@ fun TopBar(
                                     query = productor.nombre
                                     expanded = false
                                     focusManager.clearFocus()
-                                    navController.navigate(AppScreens.ProductorDetailScreen.createRoute(productor.nombre))
+                                    navController.navigate("productorDetail/${Uri.encode(productor.nombre)}")
                                     // Ejemplo: navController.navigate("productorDetail/${productor.nombre}")
                                 }
                             )
@@ -429,7 +318,8 @@ fun TopBar(
 fun FavouriteSheet(
     productoresFavoritos: List<Productor>,
     productosFavoritos: List<Producto>,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    navController: NavController
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     LaunchedEffect(Unit) {
@@ -466,7 +356,7 @@ fun FavouriteSheet(
                         modifier = Modifier
                             .size(170.dp)
                             .padding(end = 8.dp)
-                            .clickable {
+                            .clickable {navController.navigate("productorDetail/${Uri.encode(productor.nombre)}")
                             }
                     ) {
                         Column {

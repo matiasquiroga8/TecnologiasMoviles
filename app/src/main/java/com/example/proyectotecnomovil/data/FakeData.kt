@@ -141,15 +141,194 @@ object FakeData {
         )
     )
 
+    val mermeladas = listOf(
+        Producto(
+            "Mermelada de Frutilla",
+            "https://images.pexels.com/photos/8108024/pexels-photo-8108024.jpeg?auto=compress&cs=tinysrgb&w=600",
+            500.0,
+            "Dulce artesanal con fruta natural y sin conservantes."
+        ),
+        Producto(
+            "Mermelada de Naranja",
+            "https://images.pexels.com/photos/6588616/pexels-photo-6588616.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            480.0,
+            "Hecha con naranjas frescas, ideal para desayunos."
+        ),
+        Producto(
+            "Mermelada de Durazno",
+            "https://images.pexels.com/photos/18515152/pexels-photo-18515152/free-photo-of-fruta-organico-maduro-frescura.jpeg?auto=compress&cs=tinysrgb&w=600",
+            520.0,
+            "Sabor suave y textura cremosa, sin aditivos."
+        ),
+        Producto(
+            "Mermelada de Frambuesa",
+            "https://images.pexels.com/photos/5590958/pexels-photo-5590958.jpeg?auto=compress&cs=tinysrgb&w=600",
+            550.0,
+            "Intenso sabor a frambuesas de cosecha orgánica."
+        ),
+        Producto(
+            "Mermelada de Ciruela",
+            "https://images.pexels.com/photos/162851/plums-ripe-healthy-food-162851.jpeg?auto=compress&cs=tinysrgb&w=600",
+            490.0,
+            "Con trozos de fruta y sin azúcar agregada."
+        ),
+        Producto(
+            "Mermelada Light",
+            "https://images.pexels.com/photos/2942336/pexels-photo-2942336.jpeg?auto=compress&cs=tinysrgb&w=600",
+            600.0,
+            "Opción reducida en calorías, apta para diabéticos."
+        ),
+        Producto(
+            "Mermelada Mixta",
+            "https://images.pexels.com/photos/4162851/pexels-photo-4162851.jpeg?auto=compress&cs=tinysrgb&w=600",
+            530.0,
+            "Combinación de frutos rojos para un sabor único."
+        )
+    )
+
+    val lacteos = listOf(
+        Producto(
+            "Leche Orgánica",
+            "https://images.pexels.com/photos/5946724/pexels-photo-5946724.jpeg?auto=compress&cs=tinysrgb&w=600",
+            180.0,
+            "Leche fresca de vacas alimentadas naturalmente."
+        ),
+        Producto(
+            "Yogur Natural",
+            "https://images.pexels.com/photos/13466256/pexels-photo-13466256.jpeg?auto=compress&cs=tinysrgb&w=600",
+            200.0,
+            "Con probióticos, sin azúcar agregada."
+        ),
+        Producto(
+            "Queso Cremoso",
+            "https://images.pexels.com/photos/306801/pexels-photo-306801.jpeg?auto=compress&cs=tinysrgb&w=600",
+            450.0,
+            "Ideal para sandwiches y pizzas."
+        ),
+        Producto(
+            "Dulce de Leche",
+            "https://images.pexels.com/photos/28302503/pexels-photo-28302503.jpeg?auto=compress&cs=tinysrgb&w=600",
+            370.0,
+            "Clásico argentino, elaborado artesanalmente."
+        ),
+        Producto(
+            "Manteca Casera",
+            "https://images.pexels.com/photos/7965943/pexels-photo-7965943.jpeg?auto=compress&cs=tinysrgb&w=600",
+            320.0,
+            "De sabor suave, perfecta para untar."
+        ),
+        Producto(
+            "Queso de Cabra",
+            "https://images.pexels.com/photos/9946103/pexels-photo-9946103.jpeg?auto=compress&cs=tinysrgb&w=600",
+            520.0,
+            "Textura firme, sabor intenso y natural."
+        ),
+        Producto(
+            "Ricota Artesanal",
+            "https://media.istockphoto.com/id/683358816/es/foto/reques%C3%B3n-fresco-en-placa.jpg?b=1&s=612x612&w=0&k=20&c=CS0ANTb_I5zrna2-DbDklG6ePRCY8q6Lm_-FDN3XFgM=",
+            340.0,
+            "Ligera y fresca, ideal para preparaciones dulces o saladas."
+        )
+    )
+
+    val verduras = listOf(
+        Producto(
+            "Zanahoria Fresca",
+            "https://images.pexels.com/photos/32123553/pexels-photo-32123553.jpeg?auto=compress&cs=tinysrgb&w=600",
+            120.0,
+            "Cultivo agroecológico, crocante y dulce."
+        ),
+        Producto(
+            "Lechuga Criolla",
+            "https://images.pexels.com/photos/116728/pexels-photo-116728.jpeg?auto=compress&cs=tinysrgb&w=600",
+            100.0,
+            "Hojas verdes frescas, lavadas y listas para consumir."
+        ),
+        Producto(
+            "Tomate Redondo",
+            "https://images.pexels.com/photos/400958/pexels-photo-400958.jpeg?auto=compress&cs=tinysrgb&w=600",
+            160.0,
+            "Tomates maduros y jugosos, sin agroquímicos."
+        ),
+        Producto(
+            "Cebolla Morada",
+            "https://images.pexels.com/photos/8859780/pexels-photo-8859780.jpeg?auto=compress&cs=tinysrgb&w=600",
+            130.0,
+            "Sabor intenso, ideal para ensaladas."
+        ),
+        Producto(
+            "Acelga",
+            "https://images.pexels.com/photos/5738769/pexels-photo-5738769.jpeg?auto=compress&cs=tinysrgb&w=600",
+            150.0,
+            "Hojas grandes y frescas, para tortillas y guisos."
+        ),
+        Producto(
+            "Zpallo Anquito",
+            "https://images.pexels.com/photos/4110301/pexels-photo-4110301.jpeg?auto=compress&cs=tinysrgb&w=600",
+            140.0,
+            "Cultivado sin pesticidas, ideal para hervir o saltear."
+        ),
+        Producto(
+            "Espinaca",
+            "https://images.pexels.com/photos/8852027/pexels-photo-8852027.jpeg?auto=compress&cs=tinysrgb&w=600",
+            135.0,
+            "Fuente de hierro y fibra, perfecta para pastas."
+        )
+    )
+
+    val plantas = listOf(
+        Producto(
+            "Romero Seco",
+            "https://i.pinimg.com/736x/d1/8a/40/d18a409c31f1221c374b1a3478150236.jpg",
+            400.0,
+            "Hierba aromática ideal para carnes, papas y panificados. Cultivado orgánicamente."
+        ),
+        Producto(
+            "Orégano Andino",
+            "https://i.pinimg.com/736x/98/68/c9/9868c9ed3d2f89e73b48d86f777c667b.jpg",
+            350.0,
+            "Intenso sabor tradicional, cosechado a mano en las sierras."
+        ),
+        Producto(
+            "Tomillo Natural",
+            "https://i.pinimg.com/736x/22/60/07/226007cce79d7f8eeff2fbf13bf3570c.jpg",
+            420.0,
+            "Tomillo seco artesanal, excelente para guisos y asados."
+        ),
+        Producto(
+            "Albahaca Deshidratada",
+            "https://i.pinimg.com/736x/a4/aa/e6/a4aae690cae23ecae6e1422310beee04.jpg",
+            370.0,
+            "Ideal para pizzas, salsas y pestos. Aroma intenso y fresco."
+        ),
+        Producto(
+            "Ají Molido",
+            "https://i.pinimg.com/736x/19/c2/43/19c2437a63624df16a99c563d5c70b54.jpg",
+            390.0,
+            "Picante artesanal sin aditivos, perfecto para empanadas y guisos."
+        ),
+        Producto(
+            "Laurel de Montaña",
+            "https://i.pinimg.com/736x/3f/2d/c8/3f2dc8c7d0df048d709ce8346beabd07.jpg",
+            280.0,
+            "Hojas secas de laurel recolectadas de manera sustentable."
+        ),
+        Producto(
+            "Cilantro en Semilla",
+            "https://i.pinimg.com/736x/31/1d/ed/311dedb6bcc4eafe433dee21c4782706.jpg",
+            430.0,
+            "Semillas enteras de cilantro para moler o usar en infusiones y platos orientales."
+        )
+    )
+
     val productores = listOf(
-        Productor("LauraTejidos", "Textiles", textiles, "", R.drawable.textiles),
-        Productor("EcoJabones", "Cosmética natural", jabones, "", R.drawable.jabones),
-        Productor("CampoVivo", "Alimentos orgánicos", alimentosOrganicos, "", R.drawable.alimento_organico)
-        /*
-    Productor("Artesanía del Norte", "Cerámica artesanal", listOf(), "", R.drawable.ceramica),
-    Productor("Dulzuras del Valle", "Conservas y dulces caseros", listOf(), "", R.drawable.dulces),
-    Productor("Monte Nativo", "Hierbas y especias", listOf(), "", R.drawable.hierbas),
-    Productor("Sabores Andinos", "Quesos y lácteos artesanales", listOf(), "", R.drawable.quesos),
-    Productor("Tierra Verde", "Verduras agroecológicas", listOf(), "", R.drawable.verduras)*/
+        Productor("Laura Tejidos", "Textiles", textiles, "", R.drawable.textiles),
+        Productor("Eco Jabones", "Cosmética natural", jabones, "", R.drawable.jabones),
+        Productor("Campo Vivo", "Alimentos orgánicos", alimentosOrganicos, "", R.drawable.alimento_organico) Productor("Artesanía del Norte", "Cerámica artesanal", listOf(), "", R.drawable.ceramica),
+        Productor("Dulzuras del Valle", "Conservas y dulces caseros", mermeladas, "", R.drawable.mermelada),
+        Productor("Sabores Andinos", "Quesos y lácteos artesanales", lacteos, "", R.drawable.quesos),
+        Productor("Tierra Verde", "Verduras agroecológicas", verduras, "", R.drawable.verduras),
+        Productor("Monte Nativo", "Hierbas y especias", plantas, "", R.drawable.hiervas_y_especias)
+
     )
 }

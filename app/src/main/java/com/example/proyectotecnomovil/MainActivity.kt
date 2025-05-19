@@ -37,10 +37,7 @@ class MainActivity : ComponentActivity() {
                 viewModelProducto = productoViewModel,
                 onProductorClick = { productor ->
                     navController.navigate("productorDetail/${Uri.encode(productor.nombre)}")
-                }
-                /*onProductorClick = { productor ->
-                    navController.navigate("${AppScreens.ProductorDetailScreen.route}/${productor.nombre}")
-                }*/,
+                },
                 onProductoClick = { /* Acción al tocar producto */ },
                 viewModelProductor = productorViewModel
             )
