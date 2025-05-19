@@ -80,11 +80,11 @@ fun AppNavigation(
                 onBack = { navController.popBackStack() }
             )
         }
-        composable(AppScreens.SettingsScreen.route){
-            val categorias =listOf("Todos") + productores.map { it.categoria }.distinct().sorted()
+        composable(AppScreens.SettingsScreen.route) {
+            val categorias = listOf("Todos") + productores.map { it.categoria }.distinct().sorted()
             //val categoriasConTodos = listOf("Todos") + categorias
 
-            SettingsScreen(categorias)
+            SettingsScreen(categorias, onBack = { navController.popBackStack() })
         }
     }
 }

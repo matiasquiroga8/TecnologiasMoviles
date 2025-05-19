@@ -14,6 +14,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
@@ -22,32 +24,58 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.material3.MenuAnchorType
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    categorias: List<String>
+    categorias: List<String>,
+    onBack: () -> Unit
 ) {
-    var categoriaSeleccionada by remember { mutableStateOf(categorias.first()) }
+    val intervalos = listOf("Nunca", "Cada hora", "Cada 6 horas", "Diariamente")
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp)
-    ) {
-        Text("Configuración", style = MaterialTheme.typography.titleLarge)
+    // Estados en memoria para mantener la selección
+    var categoriaSeleccionada by remember { mutableStateOf("") }
+    var intervaloSeleccionado by remember { mutableStateOf("") }
 
-        ExposedDropdownMenuBoxSample(
-            label = "Categoría preferida",
-            options = categorias,
-            selectedOption = categoriaSeleccionada,
-            onOptionSelected = { categoriaSeleccionada = it }
-        )
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Configuraciones") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            Text("Configuración", style = MaterialTheme.typography.titleLarge)
 
-        // Podés dejar la ciudad fuera
-        // Y mantener notificaciones si querés
+            // Categoría preferida
+            ExposedDropdownMenuBoxSample(
+                label = "Categoría preferida",
+                options = categorias,
+                selectedOption = categoriaSeleccionada,
+                onOptionSelected = { categoriaSeleccionada = it }
+            )
+
+            // Tiempo de notificaciones
+            ExposedDropdownMenuBoxSample(
+                label = "Frecuencia de notificaciones",
+                options = intervalos,
+                selectedOption = intervaloSeleccionado,
+                onOptionSelected = { intervaloSeleccionado = it }
+            )
+        }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExposedDropdownMenuBoxSample(
@@ -71,7 +99,10 @@ fun ExposedDropdownMenuBoxSample(
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
             modifier = Modifier
-                .menuAnchor(type = MenuAnchorType.PrimaryNotEditable, enabled = true) // <- obligatorio para que el menú se posicione bien
+                .menuAnchor(
+                    type = MenuAnchorType.PrimaryNotEditable,
+                    enabled = true
+                ) // <- obligatorio para que el menú se posicione bien
                 .fillMaxWidth()
         )
 

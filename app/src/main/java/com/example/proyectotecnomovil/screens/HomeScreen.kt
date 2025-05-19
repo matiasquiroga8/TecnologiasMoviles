@@ -331,7 +331,7 @@ fun FavouriteSheet(
         sheetState = sheetState,
         containerColor = Color.White,
         scrimColor = Color.Black.copy(alpha = 0.2f) // Ajusta la opacidad del fondo
-        ) {
+    ) {
         Text(
             text = "Favoritos",
             style = MaterialTheme.typography.titleMedium,
@@ -469,4 +469,5 @@ sealed class Screen(val route: String) {
     object Home : Screen("home")
     object ProductorDetail : Screen("productor_detail")
 }
+
 
