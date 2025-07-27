@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "244350055791",
+    "project_id": "manoslocales-cd92a",
+    "storage_bucket": "manoslocales-cd92a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:244350055791:android:ce6555d8c78d8d4a63a49a",
+        "android_client_info": {
+          "package_name": "com.example.proyectotecnomovil"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPodGohWh15grbACtz--87NNimmSW3SrM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
