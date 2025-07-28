@@ -8,3 +8,4 @@ data class Productor(
     val imagenUrl: String? = null,
     val imagenRes: Int? = null
 )
+

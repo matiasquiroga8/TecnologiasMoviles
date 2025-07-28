@@ -63,6 +63,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.res.painterResource
 import com.example.proyectotecnomovil.R
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.wear.compose.navigation.currentBackStackEntryAsState
 
 @Composable
 fun HomeScreen(
@@ -77,6 +78,7 @@ fun HomeScreen(
     var showFavourites by remember { mutableStateOf(false) }
     val productoresFavoritos = viewModelProductor.productoresFavoritos
     val productosFavoritos = viewModelProducto.productosFavoritos
+    val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
 
     Scaffold(
         topBar = { TopBar(navController, productores, onSettingsClick = {}) },
@@ -105,6 +107,7 @@ fun HomeScreen(
                 FavouriteSheet(
                     productoresFavoritos = productoresFavoritos,
                     productosFavoritos = productosFavoritos,
+                    productores = productores,
                     onDismiss = {
                         showFavourites = false
                         selectedItem = 0 // Volver a Home al cerrar el sheet
@@ -112,9 +115,21 @@ fun HomeScreen(
                     navController = navController
                 )
             }
-            if(selectedItem==3){
-                navController.navigate(AppScreens.ProfileScreen.route)
+
+            when (selectedItem) {
+                1 -> showFavourites = true
+                2 -> {
+                    if (currentDestination != AppScreens.NotificationScreen.route) {
+                        navController.navigate(AppScreens.NotificationScreen.route)
+                    }
+                }
+                3 -> {
+                    if (currentDestination != AppScreens.ProfileScreen.route) {
+                        navController.navigate(AppScreens.ProfileScreen.route)
+                    }
+                }
             }
+
         }
     }
 }
@@ -316,6 +331,7 @@ fun TopBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavouriteSheet(
+    productores: List<Productor>,
     productoresFavoritos: List<Productor>,
     productosFavoritos: List<Producto>,
     onDismiss: () -> Unit,
@@ -404,6 +420,12 @@ fun FavouriteSheet(
                             .size(170.dp)
                             .padding(end = 8.dp)
                             .clickable {
+                                val productor = productores.find { it.productos.contains(producto) }
+                                productor?.let {
+                                    navController.navigate(
+                                        AppScreens.ProductoDetailScreen.createRoute(it.nombre, producto.nombre)
+                                    )
+                                }
                             }
                     ) {
                         Column {

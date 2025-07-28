@@ -166,24 +166,6 @@ fun ProfileScreen(navController: NavController,onBack: () -> Unit) {
                 dateOfBirth = dateOfBirth,
                 onDateSelected = { dateOfBirth = it }
             )
-            /*OutlinedTextField(
-                value = dateOfBirth,
-                onValueChange = {
-                    dateOfBirth = it
-                },
-                placeholder = { Text("Date of Birth") },
-                modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.White,
-                    focusedContainerColor = Color.White,
-                    focusedLabelColor = Color.Gray,
-                    unfocusedLabelColor = Color.Gray,
-                    cursorColor = Color.Black,
-                    focusedBorderColor = BorderLabelFocused,
-                    unfocusedBorderColor = Color.Gray
-                ),
-                shape = RoundedCornerShape(8.dp)
-            )*/
 
             Spacer(modifier = Modifier.height(24.dp))
 

@@ -29,14 +29,15 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.proyectotecnomovil.model.Productor
+import com.example.proyectotecnomovil.navigation.AppScreens
 import com.example.proyectotecnomovil.viewmodel.ProductoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductorDetailScreen(
+fun ProductorDetailScreens(
     navController: NavController,
     productor: Productor,
-    viewModelProducto: ProductoViewModel,   
+    viewModelProducto: ProductoViewModel,
     onBack: () -> Unit
 ) {
     Scaffold(
@@ -57,7 +58,11 @@ fun ProductorDetailScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
-                        .clickable { /* Acción si se quiere ver más del producto */ }
+                        .clickable {
+                            navController.navigate(
+                                AppScreens.ProductoDetailScreen.createRoute(productor.nombre, producto.nombre)
+                            )
+                        }
                 ) {
                     Column {
                         AsyncImage(

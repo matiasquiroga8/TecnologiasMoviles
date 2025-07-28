@@ -20,15 +20,15 @@ import androidx.compose.material3.*
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
 import androidx.compose.material3.MenuAnchorType
+import com.example.proyectotecnomovil.viewmodel.NotificationViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     categorias: List<String>,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    notificationViewModel: NotificationViewModel
 ) {
     val intervalos = listOf("Nunca", "Cada hora", "Cada 6 horas", "Diariamente")
 
@@ -70,7 +70,8 @@ fun SettingsScreen(
                 label = "Frecuencia de notificaciones",
                 options = intervalos,
                 selectedOption = intervaloSeleccionado,
-                onOptionSelected = { intervaloSeleccionado = it }
+                onOptionSelected = { intervaloSeleccionado = it
+                    notificationViewModel.setFrecuencia(it) }
             )
         }
     }
