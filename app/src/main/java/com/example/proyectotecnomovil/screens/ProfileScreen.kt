@@ -1,8 +1,12 @@
 package com.example.proyectotecnomovil.screens
 
+import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -20,7 +24,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,6 +39,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,7 +57,17 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.proyectotecnomovil.navigation.AppNavigation
 import com.example.proyectotecnomovil.navigation.AppScreens
 import com.example.proyectotecnomovil.ui.theme.BorderLabelFocused
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.material.icons.filled.VisibilityOff
+import com.example.proyectotecnomovil.AuthActivity
+import com.example.proyectotecnomovil.components.FechaNacimientoField
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.storage.FirebaseStorage
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,6 +82,26 @@ fun ProfileScreen(navController: NavController,onBack: () -> Unit) {
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         profileImageUri = uri
+    }
+    val userId = FirebaseAuth.getInstance().currentUser?.uid
+    val db = FirebaseFirestore.getInstance()
+
+    LaunchedEffect(Unit) {
+        userId?.let { uid ->
+            db.collection("users").document(uid).get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        userName = document.getString("name") ?: ""
+                        email = document.getString("email") ?: ""
+                        dateOfBirth = document.getString("dateOfBirth") ?: ""
+                        //Para Guardar imagen
+//                        val imageUrl = document.getString("profileImageUrl")
+//                        if (!imageUrl.isNullOrEmpty()) {
+//                            profileImageUri = Uri.parse(imageUrl)
+//                        }
+                    }
+                }
+        }
     }
 
     Scaffold(
@@ -138,14 +175,20 @@ fun ProfileScreen(navController: NavController,onBack: () -> Unit) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            var showPassword by remember { mutableStateOf(false) }
+
             OutlinedTextField(
                 value = password,
-                onValueChange = {
-                    password = it
-                },
-                placeholder = { Text("Password") },
+                onValueChange = { password = it },
+                placeholder = { Text("¿Quiere cambiar la contraseña? ingresela aqui") },
                 modifier = Modifier.fillMaxWidth(),
-                visualTransformation = PasswordVisualTransformation(),
+                visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    val icon = if (showPassword) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+                    IconButton(onClick = { showPassword = !showPassword }) {
+                        Icon(imageVector = icon, contentDescription = if (showPassword) "Ocultar contraseña" else "Mostrar contraseña")
+                    }
+                },
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
                     focusedContainerColor = Color.White,
@@ -193,57 +236,165 @@ fun ProfileScreen(navController: NavController,onBack: () -> Unit) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Button(onClick = { /* logout */ }) {
+            val context = LocalContext.current
+
+            Button(onClick = {
+                val uid = FirebaseAuth.getInstance().currentUser?.uid
+//                userId?.let { uid ->
+//                    val updatedUser = mapOf(
+//                        "name" to userName,
+//                        "email" to email,
+//                        "dateOfBirth" to dateOfBirth
+//                    )
+                if (uid != null) {
+                    val updatedUser = mapOf(
+
+                        "name" to userName,
+                        "email" to email,
+                        "dateOfBirth" to if (dateOfBirth.isNotEmpty()) dateOfBirth else FieldValue.delete()
+
+                    )
+                    Log.d("FECHA", "Valor fecha: $dateOfBirth")
+
+                    
+
+                    db.collection("users").document(uid)
+                        .set(updatedUser, SetOptions.merge())
+                        .addOnSuccessListener {
+                            Toast.makeText(context, "Datos actualizados", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(context, "Error al actualizar datos: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    Toast.makeText(context, "Usuario no autenticado", Toast.LENGTH_SHORT).show()
+                }
+
+                val user = FirebaseAuth.getInstance().currentUser
+                user?.let {
+                    if (password.isNotEmpty()) {
+                        user.updatePassword(password)
+                            .addOnSuccessListener {
+                                Toast.makeText(context, "Contraseña actualizada con éxito", Toast.LENGTH_SHORT).show()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(context, "Error al actualizar la contraseña: ${it.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    }
+                }
+            }) {
+                Text("Guardar cambios")
+            }
+
+//            Button(onClick = {
+//                userId?.let { uid ->
+//                    val updatedUser = hashMapOf(
+//                        "name" to userName,
+//                        "email" to email,
+//                        "dateOfBirth" to dateOfBirth
+//                        // podrías agregar imagen más adelante
+//                    )
+//                    db.collection("users").document(uid).update(updatedUser as Map<String, Any>)
+//                }
+//            }) {
+//                Text("Guardar cambios")
+//            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(onClick = {
+                FirebaseAuth.getInstance().signOut()
+                val intent = Intent(context, AuthActivity::class.java)
+                context.startActivity(intent)
+                (context as? Activity)?.finish()
+            }) {
                 Text("Cerrar sesión")
             }
+
+//            Button(onClick = {
+//                FirebaseAuth.getInstance().signOut()
+//                navController.navigate(AppScreens.LoginScreen.route) {
+//                    popUpTo(AppScreens.LoginScreen.route) { inclusive = true }
+//                }
+//            }) {
+//                Text("Cerrar sesión")
+//            }
         }
     }
 }
 
-@Composable
-fun FechaNacimientoField(
-    dateOfBirth: String,
-    onDateSelected: (String) -> Unit
-) {
-    val context = LocalContext.current
 
-    val calendar = remember { Calendar.getInstance() }
 
-    val datePickerDialog = remember {
-        DatePickerDialog(
-            context,
-            { _: DatePicker, year: Int, month: Int, day: Int ->
-                val formattedDate = "%02d/%02d/%04d".format(day, month + 1, year)
-                onDateSelected(formattedDate)
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        )
-    }
-
-    OutlinedTextField(
-        value = dateOfBirth,
-        onValueChange = {}, // No editable directamente
-        placeholder = { Text("Fecha de nacimiento") },
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) {
-                datePickerDialog.show()
-            },
-        readOnly = true,
-        shape = RoundedCornerShape(8.dp),
-        colors = OutlinedTextFieldDefaults.colors(
-            unfocusedContainerColor = Color.White,
-            focusedContainerColor = Color.White,
-            focusedLabelColor = Color.Gray,
-            unfocusedLabelColor = Color.Gray,
-            cursorColor = Color.Black,
-            focusedBorderColor = Color(0xFF4CAF50), // Verde personalizado
-            unfocusedBorderColor = Color.Gray
-        )
-    )
-}
+//@Composable
+//fun FechaNacimientoFie(
+//    dateOfBirth: String,
+//    onDateSelected: (String) -> Unit
+//) {
+//    val context = LocalContext.current
+//
+//    val calendar = remember { Calendar.getInstance() }
+//
+//    val datePickerDialog = remember {
+//        DatePickerDialog(
+//            context,
+//            { _: DatePicker, year: Int, month: Int, day: Int ->
+//                val formattedDate = "%02d/%02d/%04d".format(day, month + 1, year)
+//                onDateSelected(formattedDate)
+//            },
+//            calendar.get(Calendar.YEAR),
+//            calendar.get(Calendar.MONTH),
+//            calendar.get(Calendar.DAY_OF_MONTH)
+//        )
+//    }
+//
+//    OutlinedTextField(
+//        value = dateOfBirth,
+//        onValueChange = {}, // No editable directamente
+//        placeholder = { Text("Fecha de nacimiento") },
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .clickable(
+//                interactionSource = remember { MutableInteractionSource() },
+//                indication = null
+//            ) {
+//                datePickerDialog.show()
+//            },
+//        readOnly = true,
+//        shape = RoundedCornerShape(8.dp),
+//        colors = OutlinedTextFieldDefaults.colors(
+//            unfocusedContainerColor = Color.White,
+//            focusedContainerColor = Color.White,
+//            focusedLabelColor = Color.Gray,
+//            unfocusedLabelColor = Color.Gray,
+//            cursorColor = Color.Black,
+//            focusedBorderColor = Color(0xFF4CAF50), // Verde personalizado
+//            unfocusedBorderColor = Color.Gray
+//        )
+//    )
+//}
+//SUBIR IMAGEN (Se necesita plan pago)
+//fun subirImagenAStorage(
+//    uri: Uri,
+//    userId: String,
+//    onSuccess: (String) -> Unit,
+//    onError: (Exception) -> Unit
+//) {
+//    val storageRef = FirebaseStorage.getInstance().reference
+//    val imageRef = storageRef.child("profile_images/$userId.jpg")
+//
+//    imageRef.putFile(uri)
+//        .addOnCompleteListener { task ->
+//            if (task.isSuccessful) {
+//                // 🔐 Solo pedimos la URL si la subida fue exitosa
+//                imageRef.downloadUrl
+//                    .addOnSuccessListener { downloadUrl ->
+//                        onSuccess(downloadUrl.toString())
+//                    }
+//                    .addOnFailureListener { e ->
+//                        onError(e)
+//                    }
+//            } else {
+//                onError(task.exception ?: Exception("Error desconocido al subir imagen"))
+//            }
+//        }
+//}

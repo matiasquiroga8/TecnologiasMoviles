@@ -37,7 +37,8 @@ fun ProductorDetailScreen(
     navController: NavController,
     productor: Productor,
     viewModelProducto: ProductoViewModel,   
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onProductoClick: (String) -> Unit // NUEVO: Callback para navegar
 ) {
     Scaffold(
         topBar = {
@@ -57,7 +58,7 @@ fun ProductorDetailScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
-                        .clickable { /* Acción si se quiere ver más del producto */ }
+                        .clickable { onProductoClick(producto.id) }
                 ) {
                     Column {
                         AsyncImage(
@@ -77,7 +78,9 @@ fun ProductorDetailScreen(
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(producto.nombre, fontWeight = FontWeight.Bold)
                                 Text("$${producto.precio}")
-                                Text(producto.descripcion)
+                                Text(producto.descripcion,
+                                    maxLines = 2,  // Limitar líneas para que no ocupe mucho
+                                    )
                             }
                             val isFav = viewModelProducto.isFavorito(producto)
                             Icon(

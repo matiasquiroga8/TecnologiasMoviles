@@ -52,7 +52,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import androidx.compose.material3.DatePicker
-
+import com.example.proyectotecnomovil.components.FechaNacimientoField
 
 
 @Composable
@@ -144,10 +144,15 @@ fun BodyRegister(modifier: Modifier = Modifier, navController: NavController) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            DateOfBirthField(
-                date = dateOfBirth,
+            FechaNacimientoField(
+                dateOfBirth = dateOfBirth,
                 onDateSelected = { dateOfBirth = it }
             )
+
+//            DateOfBirthField(
+//                date = dateOfBirth,
+//                onDateSelected = { dateOfBirth = it }
+//            )
 
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -202,54 +207,55 @@ fun BodyRegister(modifier: Modifier = Modifier, navController: NavController) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
-@Composable
-fun DateOfBirthField(
-    date: String,
-    onDateSelected: (String) -> Unit
-) {
-    val datePickerState = rememberDatePickerState()
-    var showDialog by remember { mutableStateOf(false) }
 
-    val formatter = remember {
-        DateTimeFormatter.ofPattern("dd/MM/yyyy")
-    }
-
-    if (showDialog) {
-        DatePickerDialog(
-            onDismissRequest = { showDialog = false },
-            confirmButton = {
-                TextButton(onClick = {
-                    val selectedDate = datePickerState.selectedDateMillis?.let { millis ->
-                        Instant.ofEpochMilli(millis)
-                            .atZone(ZoneId.systemDefault())
-                            .toLocalDate()
-                    }
-                    selectedDate?.let {
-                        onDateSelected(it.format(formatter))
-                    }
-                    showDialog = false
-                }) {
-                    Text("Aceptar")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDialog = false }) {
-                    Text("Cancelar")
-                }
-            }
-        ) {
-            DatePicker(state = datePickerState)
-        }
-    }
-
-    OutlinedTextField(
-        value = date,
-        onValueChange = {},
-        readOnly = true,
-        label = { Text("Date of Birth") },
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { showDialog = true }
-    )
-}
+//@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
+//@Composable
+//fun DateOfBirthField(
+//    date: String,
+//    onDateSelected: (String) -> Unit
+//) {
+//    val datePickerState = rememberDatePickerState()
+//    var showDialog by remember { mutableStateOf(false) }
+//
+//    val formatter = remember {
+//        DateTimeFormatter.ofPattern("dd/MM/yyyy")
+//    }
+//
+//    if (showDialog) {
+//        DatePickerDialog(
+//            onDismissRequest = { showDialog = false },
+//            confirmButton = {
+//                TextButton(onClick = {
+//                    val selectedDate = datePickerState.selectedDateMillis?.let { millis ->
+//                        Instant.ofEpochMilli(millis)
+//                            .atZone(ZoneId.systemDefault())
+//                            .toLocalDate()
+//                    }
+//                    selectedDate?.let {
+//                        onDateSelected(it.format(formatter))
+//                    }
+//                    showDialog = false
+//                }) {
+//                    Text("Aceptar")
+//                }
+//            },
+//            dismissButton = {
+//                TextButton(onClick = { showDialog = false }) {
+//                    Text("Cancelar")
+//                }
+//            }
+//        ) {
+//            DatePicker(state = datePickerState)
+//        }
+//    }
+//
+//    OutlinedTextField(
+//        value = date,
+//        onValueChange = {},
+//        readOnly = true,
+//        label = { Text("Date of Birth") },
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .clickable { showDialog = true }
+//    )
+//}

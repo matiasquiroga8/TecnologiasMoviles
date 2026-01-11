@@ -1,9 +1,13 @@
 package com.example.proyectotecnomovil.model
 
+import com.google.gson.annotations.SerializedName
+
 
 data class Producto(
+    val id: String,
     val nombre: String,
-    val imagen: String, // URL o nombre de recurso local
+    @SerializedName("imagen")
+    val imagen: String, // URL de la imagen
     val precio: Double,
     val descripcion: String
 )

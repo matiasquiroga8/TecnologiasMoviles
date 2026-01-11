@@ -76,7 +76,7 @@ fun HomeScreen(
     var selectedItem by remember { mutableStateOf(0) }
     var showFavourites by remember { mutableStateOf(false) }
     val productoresFavoritos = viewModelProductor.productoresFavoritos
-    val productosFavoritos = viewModelProducto.productosFavoritos
+    val productosFavoritos = viewModelProducto.listaProductosFavoritos
 
     Scaffold(
         topBar = { TopBar(navController, productores, onSettingsClick = {}) },
@@ -145,7 +145,7 @@ fun BodyHome(
                     ) {
                         Box(modifier = Modifier.height(150.dp)) {
                             AsyncImage(
-                                model = productor.imagenRes,
+                                model = productor.imagenUrl,
                                 contentDescription = "Imagen del productor",
                                 modifier = Modifier
 
@@ -286,7 +286,7 @@ fun TopBar(
                                     query = productor.nombre
                                     expanded = false
                                     focusManager.clearFocus()
-                                    navController.navigate("productorDetail/${Uri.encode(productor.nombre)}")
+                                    navController.navigate("productorDetail/${Uri.encode(productor.id)}")
                                     // Ejemplo: navController.navigate("productorDetail/${productor.nombre}")
                                 }
                             )
@@ -356,12 +356,12 @@ fun FavouriteSheet(
                         modifier = Modifier
                             .size(170.dp)
                             .padding(end = 8.dp)
-                            .clickable {navController.navigate("productorDetail/${Uri.encode(productor.nombre)}")
+                            .clickable {navController.navigate("productorDetail/${Uri.encode(productor.id)}")
                             }
                     ) {
                         Column {
                             AsyncImage(
-                                model = productor.imagenRes, // puede ser una URL o un nombre de recurso
+                                model = productor.imagenUrl, // puede ser una URL o un nombre de recurso
                                 contentDescription = productor.nombre,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
