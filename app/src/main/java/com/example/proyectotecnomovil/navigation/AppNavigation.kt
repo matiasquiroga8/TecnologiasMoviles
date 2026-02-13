@@ -8,15 +8,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.proyectotecnomovil.model.Productor
 import com.example.proyectotecnomovil.screens.HomeScreen
-import com.example.proyectotecnomovil.screens.LoginScreen
 import com.example.proyectotecnomovil.screens.ProductorDetailScreen
 import com.example.proyectotecnomovil.screens.ProductoDetailScreen
-import com.example.proyectotecnomovil.screens.RegisterScreen
 import com.example.proyectotecnomovil.viewmodel.ProductoViewModel
 import com.example.proyectotecnomovil.viewmodel.ProductorViewModel
-import android.net.Uri
 import com.example.proyectotecnomovil.screens.ProfileScreen
 import com.example.proyectotecnomovil.screens.SettingsScreen
+import com.example.proyectotecnomovil.screens.NotificationScreen
 
 
 @Composable
@@ -89,22 +87,6 @@ fun AppNavigation(
                 )
             }
         }
-        /*composable(
-            AppScreens.ProductorDetailScreen.route,
-            listOf(navArgument("nombre") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val nombre = backStackEntry.arguments?.getString("nombre")
-            val productor = productores.find { it.nombre == nombre }
-
-            if (productor != null) {
-                ProductorDetailScreen(
-                    navController = navController,
-                    productor = productor,
-                    viewModelProducto = viewModelProducto,
-                    onBack = { navController.popBackStack() }
-                )
-            }
-        }*/
 
         // PERFIL
         composable(AppScreens.ProfileScreen.route) {
@@ -128,7 +110,10 @@ fun AppNavigation(
 
         // NOTIFICACIONES
         composable(AppScreens.NotificationScreen.route) {
-            // NotificationScreen(...)
+            NotificationScreen(
+                navController = navController,
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

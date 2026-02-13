@@ -73,13 +73,18 @@ fun HomeScreen(
     onProductoClick: (Producto) -> Unit,
     viewModelProductor: ProductorViewModel
 ) {
+    // ESTO ES NUEVO: Cada vez que se muestra esta pantalla, refrescamos el orden
+    // por si el usuario cambió la categoría en Settings.
+    LaunchedEffect(Unit) {
+        viewModelProductor.actualizarOrden()
+    }
     var selectedItem by remember { mutableStateOf(0) }
     var showFavourites by remember { mutableStateOf(false) }
     val productoresFavoritos = viewModelProductor.productoresFavoritos
     val productosFavoritos = viewModelProducto.listaProductosFavoritos
 
     Scaffold(
-        topBar = { TopBar(navController, productores, onSettingsClick = {}) },
+        topBar = { TopBar(navController, viewModelProductor, onSettingsClick = {}) },
         bottomBar = {
             BottomNavApp(
                 selectedItem = selectedItem,
@@ -112,8 +117,15 @@ fun HomeScreen(
                     navController = navController
                 )
             }
-            if(selectedItem==3){
-                navController.navigate(AppScreens.ProfileScreen.route)
+            LaunchedEffect(selectedItem) {
+                if (selectedItem == 2) { // 2 = Notificaciones
+                    navController.navigate(AppScreens.NotificationScreen.route)
+                    selectedItem = 0 // Reseteamos para que no quede marcado al volver
+                }
+                if (selectedItem == 3) { // 3 = Perfil
+                    navController.navigate(AppScreens.ProfileScreen.route)
+                    selectedItem = 0
+                }
             }
         }
     }
@@ -200,12 +212,13 @@ fun BodyHome(
 @Composable
 fun TopBar(
     navController: NavController,
-    productores: List<Productor>,
+    viewModelProductor: ProductorViewModel, // <--- NUEVO PARÁMETRO
+    //productores: List<Productor>,
     onSettingsClick: () -> Unit
 ) {
     var query by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
-
+/*
     val suggestions = remember(query) {
         if (query.isBlank()) emptyList()
         else productores.filter {
@@ -213,7 +226,7 @@ fun TopBar(
                     it.categoria.contains(query, ignoreCase = true)
         }
     }
-
+*/
     val focusManager = LocalFocusManager.current
 
     TopAppBar(
@@ -232,40 +245,44 @@ fun TopBar(
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
-
+/*
                 // 🔄 Buscador con ExposedDropdownMenuBox
                 ExposedDropdownMenuBox(
                     expanded = expanded && suggestions.isNotEmpty(),
                     onExpandedChange = { expanded = it },
                     modifier = Modifier.weight(1f)
-                ) {
+                ) {*/
                     TextField(
                         value = query,
                         onValueChange = {
                             query = it
-                            expanded = it.isNotBlank()
+                            //expanded = it.isNotBlank()
+                            // LLAMAMOS AL VIEWMODEL AL ESCRIBIR
+                            viewModelProductor.buscar(it)
                         },
                         placeholder = { Text("Buscar productor…") },
+                        textStyle = MaterialTheme.typography.bodyMedium,
                         singleLine = true,
-                        trailingIcon = {
+                        /*trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded)
-                        },
+                        },*/
                         modifier = Modifier
-                            .menuAnchor() // ✅ necesario para posicionar correctamente el menú
-                            .fillMaxWidth()
-                            .height(60.dp),
+                            .weight(1f)
+                            .height(50.dp)
+                            .padding(horizontal = 8.dp),
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = Color.White,
                             unfocusedContainerColor = Color.White,
-                            disabledContainerColor = Color.LightGray,
+                            //disabledContainerColor = Color.LightGray,
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent,
-                            cursorColor = Color.Black,
-                            errorIndicatorColor = Color.Red
-                        )
+                            //disabledIndicatorColor = Color.Transparent,
+                            //cursorColor = Color.Black,
+                            //errorIndicatorColor = Color.Red
+                        ),
+                        shape = CircleShape // Le damos forma redondeada estilo buscador
                     )
-
+    /*
                     ExposedDropdownMenu(
                         expanded = expanded && suggestions.isNotEmpty(),
                         onDismissRequest = { expanded = false }
@@ -292,7 +309,7 @@ fun TopBar(
                             )
                         }
                     }
-                }
+                }*/
 
                 Spacer(modifier = Modifier.width(16.dp))
 
@@ -404,6 +421,7 @@ fun FavouriteSheet(
                             .size(170.dp)
                             .padding(end = 8.dp)
                             .clickable {
+                                navController.navigate(AppScreens.ProductoDetailScreen.createRoute(producto.id))
                             }
                     ) {
                         Column {

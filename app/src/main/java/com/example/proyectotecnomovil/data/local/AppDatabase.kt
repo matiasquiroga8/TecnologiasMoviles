@@ -5,10 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [ProductorFavoritoEntity::class, ProductoFavoritoEntity::class], version = 2)
+@Database(entities = [ProductorFavoritoEntity::class, ProductoFavoritoEntity::class, NotificationEntity::class], version = 3)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun productorDao(): ProductorFavoritoDao
     abstract fun productoDao(): ProductoFavoritoDao
+    abstract fun notificacionDao(): NotificationDao
 
     /*
     Todo lo que está dentro del companion object sirve para un solo propósito:
@@ -28,7 +29,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "manos_locales_db"
-                ).fallbackToDestructiveMigration() // <--- IMPORTANTE EN DESARROLLO
+                ).fallbackToDestructiveMigration() // Esto permite borrar la DB vieja si se cambia la versión
                 .build()
                 INSTANCE = instance
                 instance

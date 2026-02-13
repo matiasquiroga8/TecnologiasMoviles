@@ -83,6 +83,7 @@ dependencies {
     ksp("androidx.room:room-compiler:$room_version") // Si usas ksp, sino usa kapt
     // Si no tienes configurado KSP, usa:
     // annotationProcessor("androidx.room:room-compiler:$room_version")
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 }
 
 apply(plugin = "com.google.gms.google-services")

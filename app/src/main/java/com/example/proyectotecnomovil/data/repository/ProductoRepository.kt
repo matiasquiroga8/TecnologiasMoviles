@@ -21,7 +21,16 @@ class ProductoRepository(private val context: Context) {
             // Intenta traer de la API
             val respuesta = ApiClient.service.getProductores()
             if (respuesta.isSuccessful) {
-                respuesta.body() ?: emptyList()
+                val listaApi = respuesta.body() ?: emptyList()
+
+                // --- FILTRO DE SEGURIDAD (NUEVO) ---
+                // Recorremos la lista y eliminamos los productos que llegaron con ID nulo
+                // (esto arregla el crash aunque la API mande datos sucios)
+                listaApi.map { productor ->
+                    productor.copy(
+                        productos = productor.productos.filter { it.id != null }
+                    )
+                }
             } else {
                 //Si falla la API usamos FakeData
                 FakeData.productores

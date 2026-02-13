@@ -23,6 +23,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.material3.MenuAnchorType
+import com.example.proyectotecnomovil.data.local.SettingsManager
+import androidx.compose.ui.platform.LocalContext
+import com.example.proyectotecnomovil.utils.NotificationScheduler
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,11 +33,14 @@ fun SettingsScreen(
     categorias: List<String>,
     onBack: () -> Unit
 ) {
+    val context = LocalContext.current
+    val settingsManager = remember { SettingsManager(context) }
+
     val intervalos = listOf("Nunca", "Cada hora", "Cada 6 horas", "Diariamente")
 
     // Estados en memoria para mantener la selección
-    var categoriaSeleccionada by remember { mutableStateOf("") }
-    var intervaloSeleccionado by remember { mutableStateOf("") }
+    var categoriaSeleccionada by remember { mutableStateOf(settingsManager.leerCategoria()) }
+    var intervaloSeleccionado by remember { mutableStateOf(settingsManager.leerIntervalo()) }
 
     Scaffold(
         topBar = {
@@ -62,7 +68,12 @@ fun SettingsScreen(
                 label = "Categoría preferida",
                 options = categorias,
                 selectedOption = categoriaSeleccionada,
-                onOptionSelected = { categoriaSeleccionada = it }
+                onOptionSelected = {
+                    categoriaSeleccionada = it
+                    settingsManager.guardarCategoria(it) // GUARDAR
+
+                }
+
             )
 
             // Tiempo de notificaciones
@@ -70,7 +81,14 @@ fun SettingsScreen(
                 label = "Frecuencia de notificaciones",
                 options = intervalos,
                 selectedOption = intervaloSeleccionado,
-                onOptionSelected = { intervaloSeleccionado = it }
+                onOptionSelected = { nuevoIntervalo ->
+                    //Actualizar UI
+                    intervaloSeleccionado = nuevoIntervalo
+                    //Guardar en memoria
+                    settingsManager.guardarIntervalo(nuevoIntervalo)
+                    //REPROGRAMAR EL WORKER!
+                    NotificationScheduler.programarNotificaciones(context, nuevoIntervalo)
+                }
             )
         }
     }
