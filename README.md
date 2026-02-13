@@ -1,50 +1,116 @@
-[ManosLocales.zip](https://github.com/user-attachments/files/20292547/ManosLocales.zip)
+📱 Proyecto Tecnologías Móviles - App de Productores y Consumidores
+Esta es una aplicación nativa de Android desarrollada en Kotlin utilizando Jetpack Compose. Su objetivo principal es conectar a consumidores con productores locales (de alimentos orgánicos, textiles), permitiendo visualizar catálogos, guardar favoritos y gestionar notificaciones.
 
-Aplicación móvil desarrollada en Jetpack Compose que conecta a consumidores con productores locales de alimentos y productos artesanales. Permite explorar productores por categoría, buscar por nombre o rubro, y acceder a sus productos detallados.
+El proyecto implementa prácticas modernas de desarrollo Android, arquitectura MVVM y persistencia de datos local y remota.
 
-Características:
-Exploración por categorías: Mermeladas, Plantas (hierbas y especias), Lácteos, Verduras, entre otros.
+🚀 Características Principales
+🔐 Autenticación y Seguridad
+Login y Registro: Integración con Firebase Authentication para gestión de usuarios.
 
-Buscador inteligente: Autocompletado con sugerencias dinámicas.
+Autenticación Biométrica: Capa de seguridad adicional utilizando huella dactilar o reconocimiento facial para acceder a la app (BiometricAuthScreen).
 
-Favoritos: Marcar y gestionar productores y productos favoritos.
+Persistencia de Sesión: Gestión inteligente del estado del usuario.
 
-Navegación fluida: Detalles de productores y productos con Jetpack Navigation.
+🛒 Gestión de Productos y Productores
+Catálogo: Visualización de listas de productores y sus productos asociados.
 
-Diseño moderno: Basado en Material 3 (Material You).
+Detalle: Pantallas detalladas para cada producto y perfil de productor.
 
-Tecnologías utilizadas:
-Lenguaje: Kotlin
+Favoritos: Funcionalidad para marcar productos y productores como favoritos, guardados localmente para acceso rápido.
 
-UI: Jetpack Compose
+⚙️ Funcionalidades del Sistema
+Notificaciones: Sistema de notificaciones programadas utilizando WorkManager (NotificationWorker), configurables desde la pantalla de ajustes.
 
-Navegación: Jetpack Navigation Compose
+Base de Datos Local: Uso de Room Database para almacenar notificaciones y favoritos de manera persistente en el dispositivo.
 
-Gestión de estado: ViewModel + State
+Configuración: Pantalla de ajustes (SettingsScreen) para personalizar la experiencia del usuario (frecuencia de notificaciones, categorías, etc.).
 
-Persistencia: MutableStateList (simulación de favoritos)
+🛠️ Stack Tecnológico
+El proyecto utiliza las últimas librerías y herramientas recomendadas por Google:
 
-Recursos: Imágenes de productos desde Pexels
+Lenguaje: Kotlin (100%)
 
+UI Toolkit: Jetpack Compose (Material Design 3)
 
-Estructura del proyecto
+Arquitectura: MVVM (Model-View-ViewModel)
 
+Inyección de Dependencias: Integración manual mediante ViewModels y Repositorios.
+
+Librerías Clave:
+Navegación: androidx.navigation:navigation-compose
+
+Red (Networking): Retrofit + GSON (para consumo de APIs REST).
+
+Base de Datos Local: Room (SQLite abstraction).
+
+Backend / Auth: Firebase (Authentication & Firestore).
+
+Carga de Imágenes: Coil (Carga asíncrona de imágenes).
+
+Tareas en Segundo Plano: WorkManager.
+
+Biometría: androidx.biometric.
+
+Concurrencia: Kotlin Coroutines.
+
+📂 Estructura del Proyecto
+El código está organizado siguiendo la arquitectura MVVM para asegurar la escalabilidad y mantenibilidad:
+
+com.example.proyectotecnomovil
+├── components/        # Componentes UI reutilizables (Ej: FechaNacimiento)
 ├── data/
-│   └── FakeData.kt          # Datos simulados de productores y productos
-├── model/
-│   ├── Productor.kt         # Modelo de productor
-│   └── Producto.kt          # Modelo de producto
-├── navigation/
-│   ├── AppNavigation.kt     # Navegación principal
-│   └── AppScreens.kt        # Definición de rutas
-├── screens/
-│   ├── HomeScreen.kt        # Pantalla principal
-│   ├── ProductorDetailScreen.kt  # Detalle de productor
-│   └── Screen.kt            # Componente base
-├── ui/
-│   └── TopBar.kt            # Barra superior con buscador
-├── viewmodel/
-│   ├── ProductoViewModel.kt # Lógica de productos favoritos
-│   └── ProductorViewModel.kt# Lógica de productores favoritos
-├── AuthActivity.kt          # Login y Registro
-└── MainActivity.kt          # Pantallas dentro de la app
+│   ├── local/         # Base de datos Room, DAOs, Entidades y SettingsManager
+│   ├── network/       # Configuración de Retrofit y Endpoints de API
+│   ├── repository/    # Repositorios (fuente única de verdad de datos)
+│   └── FakeData.kt    # Datos de prueba para desarrollo
+├── model/             # Modelos de datos (Producto, Productor, User)
+├── navigation/        # Grafo de navegación y definición de rutas
+├── screens/           # Pantallas Composable (Home, Login, Profile, etc.)
+├── services/          # Servicios lógicos (Auth, Mapas)
+├── utils/             # Utilidades generales (Schedulers)
+├── viewmodel/         # StateHolders para las pantallas (Lógica de negocio)
+├── workers/           # Workers para tareas en segundo plano
+├── MainActivity.kt    # Punto de entrada principal
+└── AuthActivity.kt    # Actividad de gestión de autenticación
+🔧 Configuración e Instalación
+Para ejecutar este proyecto en tu entorno local:
+
+Clonar el repositorio:
+
+git clone <URL_DEL_REPOSITORIO>
+Abrir en Android Studio:
+Asegúrate de tener la última versión estable de Android Studio (Ladybug o superior recomendado).
+
+Configurar Firebase:
+
+Este proyecto requiere un archivo google-services.json.
+
+Debes crear un proyecto en la consola de Firebase.
+
+Descarga tu propio google-services.json y colócalo en la carpeta app/.
+
+Sincronizar Gradle:
+Deja que Android Studio descargue todas las dependencias.
+
+Ejecutar:
+Conecta un dispositivo físico o utiliza un emulador.
+
+Nota: Para probar la autenticación biométrica en el emulador, asegúrate de configurar una huella en la configuración de seguridad del dispositivo virtual.
+
+✅ Permisos Requeridos
+La aplicación solicita los siguientes permisos en el AndroidManifest.xml:
+
+INTERNET: Para conectar con la API y Firebase.
+
+ACCESS_NETWORK_STATE: Para verificar la conectividad.
+
+POST_NOTIFICATIONS: Para mostrar notificaciones en Android 13+.
+
+USE_BIOMETRIC: Para el inicio de sesión seguro.
+
+👥 Autores
+Matías Quiroga - Desarrollador Principal
+
+Tomás - Desarrollador / Colaborador
+
+Este proyecto fue desarrollado como parte de la materia Tecnologías Móviles.
