@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [ProductorFavoritoEntity::class, ProductoFavoritoEntity::class, NotificationEntity::class], version = 3)
+@Database(entities = [ProductorFavoritoEntity::class, ProductoFavoritoEntity::class, NotificationEntity::class], version = 4)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun productorDao(): ProductorFavoritoDao
     abstract fun productoDao(): ProductoFavoritoDao

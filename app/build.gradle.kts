@@ -84,6 +84,7 @@ dependencies {
     // Si no tienes configurado KSP, usa:
     // annotationProcessor("androidx.room:room-compiler:$room_version")
     implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
 }
 
 apply(plugin = "com.google.gms.google-services")

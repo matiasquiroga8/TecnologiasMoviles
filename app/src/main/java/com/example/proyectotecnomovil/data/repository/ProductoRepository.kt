@@ -62,12 +62,12 @@ class ProductoRepository(private val context: Context) {
 
     // --- BASE DE DATOS ---
     //Productores
-    suspend fun agregarProductorFavorito(id: String) {
-        productorFavoritoDao.insert(ProductorFavoritoEntity(id))
+    suspend fun agregarProductorFavorito(entidad: ProductorFavoritoEntity) {
+        productorFavoritoDao.insert(entidad)
     }
 
     suspend fun eliminarProductorFavorito(id: String) {
-        productorFavoritoDao.delete(ProductorFavoritoEntity(id))
+        productorFavoritoDao.deleteById(id)
     }
 
     suspend fun obtenerIdsProductoresFavoritos(): List<String> {

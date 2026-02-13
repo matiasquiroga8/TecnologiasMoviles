@@ -15,11 +15,12 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 
 
 /*Activity para todas las funcionalidades de la app,
 * exceptuando Login, Registro y Splash*/
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
 
     // 1. Declarar el lanzador de permisos
     private val requestPermissionLauncher = registerForActivityResult(

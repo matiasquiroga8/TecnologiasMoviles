@@ -11,6 +11,7 @@ data class Productor(
     // Ponemos String para recibir URLs de internet
     // @SerializedName asegura que si el JSON trae "imagen", lo guarde aca
     @SerializedName("imagen")
-    val imagenUrl: String
+    val imagenUrl: String,
+    val ubicacion: String = "Córdoba, Argentina"
 )
 

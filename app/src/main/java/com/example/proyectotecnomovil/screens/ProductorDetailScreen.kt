@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,12 +25,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.proyectotecnomovil.model.Productor
 import com.example.proyectotecnomovil.viewmodel.ProductoViewModel
+import com.example.proyectotecnomovil.services.AbrirMaps
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,6 +44,7 @@ fun ProductorDetailScreen(
     onBack: () -> Unit,
     onProductoClick: (String) -> Unit // NUEVO: Callback para navegar
 ) {
+    val context = LocalContext.current
     Scaffold(
         topBar = {
             TopAppBar(
@@ -47,6 +52,20 @@ fun ProductorDetailScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        AbrirMaps(
+                            context = context,
+                            direccion = productor.ubicacion
+                        )
+                    }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.LocationOn,
+                            contentDescription = "Ver ubicación"
+                        )
                     }
                 }
             )

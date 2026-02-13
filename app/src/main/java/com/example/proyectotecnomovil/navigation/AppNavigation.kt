@@ -1,31 +1,55 @@
 package com.example.proyectotecnomovil.navigation
 
+import android.app.Activity
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.proyectotecnomovil.model.Productor
-import com.example.proyectotecnomovil.screens.HomeScreen
-import com.example.proyectotecnomovil.screens.ProductorDetailScreen
-import com.example.proyectotecnomovil.screens.ProductoDetailScreen
+import com.example.proyectotecnomovil.screens.*
 import com.example.proyectotecnomovil.viewmodel.ProductoViewModel
 import com.example.proyectotecnomovil.viewmodel.ProductorViewModel
-import com.example.proyectotecnomovil.screens.ProfileScreen
-import com.example.proyectotecnomovil.screens.SettingsScreen
-import com.example.proyectotecnomovil.screens.NotificationScreen
-
 
 @Composable
 fun AppNavigation(
     navController: NavHostController,
-    productores: List<Productor>, // Esta lista viene del ViewModel (ya con datos de API)
+    productores: List<Productor>,
     viewModelProducto: ProductoViewModel,
     viewModelProductor: ProductorViewModel
 ) {
-    NavHost(navController = navController, startDestination = AppScreens.HomeScreen.route) {
-        //HOME
+    NavHost(
+        navController = navController,
+        startDestination = "biometric_check"
+    ) {
+        // 1. PANTALLA DE HUELLA
+        composable("biometric_check") {
+            val activity = (LocalContext.current as? Activity)
+            BiometricAuthScreen(
+                onAuthenticated = {
+                    // Si la huella es correcta, vamos al Home
+                    // y borramos la pantalla de huella del historial
+                    navController.navigate(AppScreens.HomeScreen.route) {
+                        popUpTo("biometric_check") { inclusive = true }
+                    }
+                },
+
+                onCancel = {
+                    // Si falla o cancela, volvemos al Login o cerramos
+                    // Asegúrate de que LoginScreen esté en el grafo si lo usas aquí,
+                    // si no, puedes usar activity.finish() pasando el contexto.
+                    // Por ahora, asumimos que quieres ir al login:
+//                    navController.navigate(AppScreens.LoginScreen.route) {
+//                        popUpTo("biometric_check") { inclusive = true }
+//                    }
+                    activity?.finish()
+                }
+            )
+        }
+
+        // 2. HOME (Segunda pantalla, después de la huella)
         composable(AppScreens.HomeScreen.route) {
             HomeScreen(
                 navController = navController,
@@ -33,28 +57,23 @@ fun AppNavigation(
                 viewModelProducto = viewModelProducto,
                 viewModelProductor = viewModelProductor,
                 onProductorClick = { productor ->
-                    // CAMBIO: Navegamos usando el ID del productor
                     navController.navigate(AppScreens.ProductorDetailScreen.createRoute(productor.id))
                 },
-                onProductoClick = {producto ->
-                    // CAMBIO: Navegamos usando el ID del producto
+                onProductoClick = { producto ->
                     navController.navigate(AppScreens.ProductoDetailScreen.createRoute(producto.id))
                 }
             )
         }
 
-        //DETALLE PRODUCTOR
+        // ... El resto de tus pantallas siguen igual ...
+
+        // DETALLE PRODUCTOR
         composable(
             route = AppScreens.ProductorDetailScreen.route,
             arguments = listOf(navArgument("id") { type = NavType.StringType })
         ) { backStackEntry ->
             val idProductor = backStackEntry.arguments?.getString("id")
-            /*val nombreProductor = backStackEntry.arguments
-                ?.getString("nombre")
-                ?.let { Uri.decode(it) }*/
-            // Buscamos en la lista por ID
             val productor = productores.find { it.id == idProductor }
-            //val productor = productores.find { it.nombre == nombreProductor }
 
             if (productor != null) {
                 ProductorDetailScreen(
@@ -62,21 +81,19 @@ fun AppNavigation(
                     productor = productor,
                     viewModelProducto = viewModelProducto,
                     onBack = { navController.popBackStack() },
-                    // ACA CONECTAMOS EL CLICK DEL PRODUCTO HACIA LA PANTALLA NUEVA
                     onProductoClick = { idProducto ->
                         navController.navigate(AppScreens.ProductoDetailScreen.createRoute(idProducto))
                     }
                 )
             }
         }
-        // DETALLE PRODUCTO (Por ID) - NUEVO
+
+        // DETALLE PRODUCTO
         composable(
             route = AppScreens.ProductoDetailScreen.route,
             arguments = listOf(navArgument("id") { type = NavType.StringType })
         ) { backStackEntry ->
             val idProducto = backStackEntry.arguments?.getString("id")
-
-            // Buscamos el producto dentro de todos los productores
             val producto = productores.flatMap { it.productos }.find { it.id == idProducto }
 
             if (producto != null) {
@@ -99,12 +116,9 @@ fun AppNavigation(
         // CONFIGURACION
         composable(AppScreens.SettingsScreen.route) {
             val categorias = listOf("Todos") + productores.map { it.categoria }.distinct().sorted()
-            //val categoriasConTodos = listOf("Todos") + categorias
-
             SettingsScreen(
                 categorias = categorias,
-                onBack = { navController.popBackStack() },
-                // notificationViewModel = ... (si lo necesitas pasar)
+                onBack = { navController.popBackStack() }
             )
         }
 
@@ -115,6 +129,11 @@ fun AppNavigation(
                 onBack = { navController.popBackStack() }
             )
         }
+
+        // LOGIN (Necesario si onCancel navega aquí)
+        composable(AppScreens.LoginScreen.route) {
+            // Aquí deberías llamar a tu LoginScreen si el usuario cancela la huella
+            // O bien redirigirlo a AuthActivity
+        }
     }
 }
-
