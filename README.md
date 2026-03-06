@@ -114,3 +114,5 @@ Matías Quiroga - Desarrollador Principal
 Tomás - Desarrollador / Colaborador
 
 Este proyecto fue desarrollado como parte de la materia Tecnologías Móviles.
+
+https://github.com/user-attachments/assets/dc634019-0c2f-4825-bd50-853767463de6
